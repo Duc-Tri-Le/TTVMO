@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import { connectDatabase } from "./config/database.js";
+import { userRouter } from "./router/userRouter.js";
 
 const app = express();
 const port = 4000;
@@ -13,6 +14,10 @@ app.use(cors());
 
 //connect data
 await connectDatabase();
+
+//api
+app.use("/api/user", userRouter);
+app.use("/images", express.static("uploads"));
 
 app.listen(port, () => {
     console.log("da khoi tao", port)
