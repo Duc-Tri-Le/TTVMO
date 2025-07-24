@@ -1,4 +1,4 @@
-import { acceptInstructorModel, loginAdminModel, loginUserModel, registerUSerModel } from "../model/userModel.js";
+import { acceptInstructorModel, getDetailUserModel, getUsersModel, loginAdminModel, loginUserModel, registerUSerModel, updateUSerModel } from "../model/userModel.js";
 
 const loginUserController = async (req, res) =>{
     try {
@@ -39,4 +39,30 @@ const acceptInstructor = async (req, res) => {
     }
 }
 
-export {loginUserController, registerUSer, loginAdmin,acceptInstructor}
+const getUSers = async (req, res) => {
+    try {
+        const {result} = await getUsersModel();
+        return res.json(result)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getDetailUser = async (req, res) =>{
+    try {
+        const {taiKhoan_id} = req.body;
+        const {result} = await getDetailUserModel(taiKhoan_id);
+        return res.json(result)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const updateUser = async (req, res) =>{
+    const {ifUsers} = req.body;
+    ifUsers.ngaySua = new Date();
+    
+    const {result} = await updateUSerModel(ifUsers);
+    return res.json(result);
+}
+export {loginUserController, registerUSer, loginAdmin,acceptInstructor, getUSers, getDetailUser, updateUser}

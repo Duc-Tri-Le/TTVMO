@@ -63,11 +63,11 @@ const registerUSerModel = async (tenDangNhap, password, email, role, SDT) => {
 
     const hashPassword = await bcrypt.hash(password, 12);
     const getVaiTro_id = `select vaiTro_id from vaitro where tenVaiTro = ?`;
-    const [vaiTro] = await pool.execute(getVaiTro_id, [role]);
+    const [vaiTro] = await connection.execute(getVaiTro_id, [role]);
     const vaiTro_id = vaiTro[0].vaiTro_id;
 
     const insertUser = `insert into taikhoan(tenDangNhap, matKhau, email, SDT, vaiTro_id) values(?,?,?,?, ?)`;
-    const [rows] = await pool.execute(insertUser, [
+    const [rows] = await connection.execute(insertUser, [
       tenDangNhap,
       hashPassword,
       email,
@@ -77,6 +77,7 @@ const registerUSerModel = async (tenDangNhap, password, email, role, SDT) => {
 
     const taiKhoan_id = rows.insertId;
     const token = await createToken(role, taiKhoan_id);
+    connection.commit()
     return {
       result: {
         taiKhoan_id,
@@ -130,9 +131,69 @@ const acceptInstructorModel = async (taiKhoan_id) => {
   };
 };
 
+const getUsersModel = async () => {
+  const getUser = `select * from taikhoan where vaiTro_id in (1,3)`;
+  const [rows] = await pool.execute(getUser);
+  return {
+    result :{
+      success : true,
+      DSND : rows
+    }
+  }
+}
+
+const getDetailUserModel = async(taiKhoan_id) => {
+  const getDetail = `select * from taikhoan where taiKhoan_id = ?`;
+  const [rows] = await pool.execute(getDetail, [taiKhoan_id]);
+  return {
+    result : {
+      success : true,
+      User : rows[0]
+    }
+  }
+}
+
+const updateUSerModel = async({taiKhoan_id, ...ifUser}) => {
+  const connection = await pool.getConnection()
+  try {
+    await connection.beginTransaction();
+    const fields = [];
+    const values = [];
+  
+    for(const key in ifUser){
+      if(ifUser[key] !== undefined){
+        fields.push(`${key} = ?`);
+        values.push(ifUser[key]);
+      }
+    };
+    values.push(taiKhoan_id);
+    console.log({fields, values});
+    const updateUser = `update taikhoan set ${fields.join(", ")} where taiKhoan_id = ?`;
+    const [update] = await connection.execute(updateUser, values);
+
+    const getUser = `select * from taikhoan where taiKhoan_id = ?`;
+    const [user] = await connection.execute(getUser, [taiKhoan_id]);
+    connection.commit();
+    return {
+      result : {
+        user : user[0],
+        success : true
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    connection.rollback()
+  } finally{
+    connection.release()
+  }
+}
+
 export {
   loginUserModel,
   registerUSerModel,
   loginAdminModel,
   acceptInstructorModel,
+  getUsersModel,
+  getDetailUserModel,
+  updateUSerModel
 };
