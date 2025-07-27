@@ -1,10 +1,13 @@
 import express from "express";
-import { addGrade, hideGrade } from "../controllers/gradeController.js";
+import { addGrade, deleteGrade, getGrade, hideGrade } from "../controllers/gradeController.js";
 import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 
-const gradeRouter = express.Router;
+const gradeRouter = express.Router();
 
-gradeRouter.put("/addGrade", authMiddleware,authorizeRoles("nguoi_quan_ly"), addGrade);
-gradeRouter.patch("/hideGrade", authMiddleware, authorizeRoles("nguoi_quan_ly"), hideGrade);
+//nguoi quan ly
+gradeRouter.put("/addGrade", addGrade);
+gradeRouter.patch("/hideGrade", hideGrade);
+gradeRouter.delete("/deleteGrade", deleteGrade);
+gradeRouter.get("/getGrade", getGrade);
 
 export default gradeRouter

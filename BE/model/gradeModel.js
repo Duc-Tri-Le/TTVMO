@@ -47,4 +47,24 @@ const hideGradeModel = async (capHoc_id) => {
     }
   }
 }
-export {addGradeModel, hideGradeModel}
+
+const deleteGradeModel = async (capHoc_id) => {
+  const deleteGrade = `delete from caphoc where capHoc_id = ?`;
+  await pool.execute(deleteGrade, [capHoc_id]);
+  return {
+    message : "xoa cap hoc thanh cong"
+  }
+}
+
+const getGradeModel = async () => {
+  const getGrade = `select * from caphoc`;
+  const [grade] = await pool.execute(getGrade);
+  return {
+    result : {
+      message : "lay danh sach cap hoc thanh cong",
+      grade : grade
+    }
+  }
+}
+
+export {addGradeModel, hideGradeModel, deleteGradeModel, getGradeModel}

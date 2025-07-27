@@ -1,4 +1,4 @@
-import { addGradeModel, hideGradeModel } from "../model/gradeModel.js";
+import { addGradeModel, deleteGradeModel, getGradeModel, hideGradeModel } from "../model/gradeModel.js";
 
 const addGrade = async (req, res) =>{
     try {
@@ -20,4 +20,15 @@ const hideGrade = async(req,res) =>{
     }
 }
 
-export {addGrade, hideGrade}
+const deleteGrade = async (req,res) => {
+    const capHoc_id = req.query;
+    const {message} = await deleteGradeModel(capHoc_id);
+
+    return res.json(message)
+}
+
+const getGrade = async (req,res) => {
+    const {result} = await getGradeModel();
+    return res.json(result);
+}
+export {addGrade, hideGrade, deleteGrade, getGrade}
