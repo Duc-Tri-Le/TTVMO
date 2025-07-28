@@ -21,7 +21,7 @@ await connectDatabase();
 
 //api
 app.use("/api/user", userRouter);
-app.use("/images", express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 app.use("/api/grade", gradeRouter);
 app.use("/api/program", programRouter);
 app.use("/api/courseType", courseTypeRouter);

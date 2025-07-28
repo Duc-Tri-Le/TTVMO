@@ -2,9 +2,9 @@ import { addCourseTypeModel, deleteCourseTypeModel, getCourseTypeModel, hideCour
 
 const addCourseType = async (req, res) =>{
     try {
-        const {tenLHK, CTH_id} = req.body;
+        const {tenLKH, CTH_id} = req.body;
         const ngayTao = new Date();
-        const {message} = await addCourseTypeModel(tenLHK, ngayTao, CTH_id);
+        const {message} = await addCourseTypeModel(tenLKH, ngayTao, CTH_id);
         return res.json(message)
     } catch (error) {
         console.log(error);
