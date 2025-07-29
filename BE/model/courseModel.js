@@ -1,6 +1,17 @@
 import { pool } from "../config/database.js";
+import path from "path";
+import fs from "fs";
+import { __filename, __dirname } from "../uploads/url.js";
 
-const addCourseModel = async ( list_gv_id, ifCourse, ifLessons, ifDocuments,videoURL, documentURL) => {
+const insertGV_KH = async (connection, list_gv_id, khoaHoc_id) => {
+
+    const ngayTao = new Date();
+    const gv_id = list_gv_id.map((gv_id) => [khoaHoc_id, gv_id, ngayTao]);
+    const insertKH_GV = `insert into gv_kh(khoaHoc_id, gv_id, ngayTao) values ?`;   
+    await connection.query(insertKH_GV, [gv_id]);
+}
+
+const addCourseModel = async (list_gv_id, ifCourse) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -26,13 +37,8 @@ const addCourseModel = async ( list_gv_id, ifCourse, ifLessons, ifDocuments,vide
     const khoaHoc_id = course.insertId;
 
     //bang gv_kh
-    const ngayTao = new Date();
-    const gv_id = list_gv_id.map((gv_id) => [khoaHoc_id, gv_id, ngayTao]);
-    const insertKH_GV = `insert into gv_kh(khoaHoc_id, gv_id, ngayTao) values ?`;
-    await connection.query(insertKH_GV, [gv_id]);
+    await insertGV_KH(connection, list_gv_id, khoaHoc_id);
 
-    //bang bai giang
-    //bang tai lieu
     connection.commit();
     return {
       message: "them khoa hoc thanh cong",
@@ -57,12 +63,32 @@ const hideCourseModel = async (khoaHoc_id) => {
 };
 
 const deleteCourseModel = async (khoaHoc_id) => {
-  const deleteCourse = `delete from khoahoc where khoaHoc_id = ?`;
-  await pool.execute(deleteCourse, [khoaHoc_id]);
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+   
+    const selectImage = `select hinhanh from khoahoc where khoaHoc_id = ?`;
+    const [image] = await connection.execute(selectImage, [khoaHoc_id]);
+    
+    const imageURL = path.join(__dirname, "images", image[0].hinhanh);
+    if (fs.existsSync(imageURL)) {
+      fs.unlinkSync(imageURL);
+    }
 
-  return {
-    message: "xoa khoa hoc thanh cong",
-  };
+    const deleteCourse = `delete from khoahoc where khoaHoc_id = ?`;
+    await connection.execute(deleteCourse, [khoaHoc_id]);
+
+    connection.commit();
+
+    return {
+      message: "xoa khoa hoc thanh cong",
+    };
+  } catch (error) {
+    console.log(error);
+    connection.rollback();
+  } finally {
+    connection.release();
+  }
 };
 
 const getCourseModel = async () => {
@@ -93,22 +119,55 @@ const getCourseModel = async () => {
   };
 };
 
-const updateCourseModel = async ({khoaHoc_id, ...ifCourse}) =>{
-  const fields = [];
-  const values = [];
-  
-  for(const key in ifCourse) {
-    if(ifCourse[key] !== undefined) {
-      fields.push(`${key} = ?`);
-      values.push(`${ifCourse[key]}`)
-    }
-  }
-  values.push(khoaHoc_id)
+const updateCourseModel = async (list_gv_id, khoaHoc_id, ifCourse) => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
 
-  const updateCourse = `update khoahoc set ${fields.join(", ")} where khoaHoc_id  = ?`;
-  await pool.execute(updateCourse, values);
-  return {
-    message : "cap nhat thanh cong"
+    const selectImage = `select hinhanh from khoahoc where khoaHoc_id = ?`;
+    const [image] = await connection.execute(selectImage, [khoaHoc_id]);
+    const imageURL = path.join(__dirname, "images", image[0].hinhanh);
+    if (fs.existsSync(imageURL)) {
+      fs.unlinkSync(imageURL);
+    }
+
+    const fields = [];
+    const values = [];
+
+    for (const key in ifCourse) {
+      if (ifCourse[key] !== undefined) {
+        fields.push(`${key} = ?`);
+        values.push(`${ifCourse[key]}`);
+      }
+    }
+    values.push(khoaHoc_id);
+     const updateCourse = `update khoahoc set ${fields.join(
+      ", "
+    )} where khoaHoc_id  = ?`;
+    await connection.execute(updateCourse, values);
+
+    //xoa bang cu
+    const deleteGV_KH = `delete from gv_kh where khoaHoc_id = ?`;
+    await connection.execute(deleteGV_KH, [khoaHoc_id]);
+   
+    //them gv_kh
+    await insertGV_KH(connection, list_gv_id, khoaHoc_id);
+
+    await connection.commit();
+    return {
+      message: "cap nhat thanh cong",
+    };
+  } catch (error) {
+    await connection.rollback();
+  }finally{
+    connection.release();
   }
-}
-export { addCourseModel, hideCourseModel, deleteCourseModel, getCourseModel, updateCourseModel };
+};
+
+export {
+  addCourseModel,
+  hideCourseModel,
+  deleteCourseModel,
+  getCourseModel,
+  updateCourseModel,
+};

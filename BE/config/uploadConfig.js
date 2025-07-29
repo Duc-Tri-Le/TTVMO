@@ -24,7 +24,7 @@ const fileFilter = (req, file, cb) => {
     (file.mimetype === "image/jpeg" || file.mimetype === "image/png");
   const isPDF =
     file.fieldname === "document" && file.mimetype === "application/pdf";
-  const isVideo = file.fieldname === "video" && file.mimetype === "video/mp3";
+  const isVideo = file.fieldname === "video" && file.mimetype === "video/mp4";
   if (isImage || isPDF || isVideo) cb(null, true);
   else cb(new Error("File không hợp lệ"), false);
 };
