@@ -1,4 +1,4 @@
-import { addDocumentModel } from "../model/documentModel.js";
+import { addDocumentModel, deleteDocumentModel } from "../model/documentModel.js";
 
 const addDocument = async (req, res) => {
     let {ifDocument} = req.body;
@@ -13,4 +13,9 @@ const addDocument = async (req, res) => {
     return res.json(message);
 }
 
-export {addDocument}
+const deleteDocument = async (req, res) =>{
+    const {TL_id} =  req.query;
+    const {message} = await deleteDocumentModel(TL_id);
+    return res.json(message)
+}
+export {addDocument, deleteDocument}

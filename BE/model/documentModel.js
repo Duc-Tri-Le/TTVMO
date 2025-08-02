@@ -1,4 +1,7 @@
 import { pool } from "../config/database.js";
+import fs from "fs";
+import { __dirname, __filename } from "../uploads/url.js";
+import path from "path";
 
 const addDocumentModel = async (ifDocument, BG_id) => {
   const connection = await pool.getConnection();
@@ -15,11 +18,11 @@ const addDocumentModel = async (ifDocument, BG_id) => {
         dauGiaTri.push("?");
       }
     }
-    
+
     const addDocument = `insert into tailieu(${fields.join(
       ", "
     )}) values(${dauGiaTri.join(", ")})`;
-    console.log({addDocument, values});
+    console.log({ addDocument, values });
     const [document] = await connection.execute(addDocument, values);
     console.log(document);
 
@@ -30,15 +33,34 @@ const addDocumentModel = async (ifDocument, BG_id) => {
     };
   } catch (error) {
     console.log(error);
-    await connection.rollback()
+    await connection.rollback();
   }
 };
 
 const deleteDocumentModel = async (TL_id) => {
-  const deleteDocument = `delete from tailieu where TL_id = ?`;
-  await pool.execute(deleteDocument, [TL_id]);
-  return {
-    message: "xoa tai lieu thanh cong",
-  };
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    
+    const selectPDFurl = `select duongdantep from tailieu where TL_id = ?`;
+    const [pdfURL] = await connection.execute(selectPDFurl, [TL_id]);
+
+    const pdfPath = path.join(__dirname, "pdf", pdfURL[0].duongdantep);
+    console.log(pdfPath);
+    if(fs.existsSync(pdfPath)){
+      fs.unlinkSync(pdfPath);
+    }
+
+    const deleteDocument = `delete from tailieu where TL_id = ?`;
+    await pool.execute(deleteDocument, [TL_id]);
+
+    await connection.commit();
+    return {
+      message: "xoa tai lieu thanh cong",
+    };
+  } catch (error) {
+    console.log(error);
+    connection.rollback()
+  }
 };
 export { addDocumentModel, deleteDocumentModel };

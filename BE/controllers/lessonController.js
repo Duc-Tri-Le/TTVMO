@@ -1,4 +1,4 @@
-import { addLessonModel, deleteLessonModel } from "../model/lessonModel.js";
+import { addLessonModel, deleteLessonModel, getLessonModel } from "../model/lessonModel.js";
 
 const addLesson = async (req, res) => {
   try {
@@ -37,4 +37,9 @@ const deleteLesson = async (req,res) => {
   const{message} = await deleteLessonModel(BG_id);
   return res.json(message)
 }
-export { addLesson, deleteLesson };
+
+const getLesson = async (req, res) => {
+  const {result} = await getLessonModel();
+  return res.json(result)
+}
+export { addLesson, deleteLesson, getLesson };

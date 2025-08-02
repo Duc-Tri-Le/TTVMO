@@ -1,9 +1,11 @@
 import express from "express";
-import { addDocument } from "../controllers/documentControlller.js";
+import { addDocument, deleteDocument } from "../controllers/documentControlller.js";
 import { upload } from "../config/uploadConfig.js";
+import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 
 const documentRouter = express.Router();
 
-documentRouter.put("/addDocument",upload.single("document"), addDocument);
+documentRouter.put("/addDocument",  authMiddleware, authorizeRoles("giang_vien"), upload.single("document"), addDocument);
+documentRouter.delete("/deleteDocument",  authMiddleware, authorizeRoles("giang_vien"), deleteDocument);
 
 export default documentRouter;

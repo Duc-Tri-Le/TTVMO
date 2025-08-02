@@ -1,3 +1,4 @@
+import { get } from "http";
 import { pool } from "../config/database.js";
 import { __filename, __dirname } from "../uploads/url.js";
 import fs from "fs";
@@ -72,6 +73,20 @@ const deleteLessonModel = async (BG_id) => {
   }
 };
 
+const getLessonModel = async () => {
+  const getLesson = `select bg.BG_id, bg.tenBG, bg.videoURL, bg.mota, bg.ngayTao as bg_ngay_tao,
+  tl.TL_id, tl.tenTL, tl.ngayTao as tl_ngay_tao , tl.loaiTL, tl.dinhDangTep, tl.duongdantep, tl.coDuocTaiVe
+  
+  from baigiang bg
+  left join tailieu tl on bg.BG_id = tl.BG_id
+
+  order by bg.ngayTao desc
+  `
+  const [result] = await pool.execute(getLesson);
+  console.log(result);
+  return {result}
+}
+
 const addDocument = async (connection, ifDocument, BG_id) => {
   try {
     ifDocument.BG_id = BG_id;
@@ -104,4 +119,4 @@ const addDocument = async (connection, ifDocument, BG_id) => {
   }
 };
 
-export { addLessonModel, deleteLessonModel };
+export { addLessonModel, deleteLessonModel, getLessonModel };
