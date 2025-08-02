@@ -10,7 +10,7 @@ const pool =  mysql2.createPool(
 );
 
 const connectDatabase = async () => {
-    const connection = await pool.getConnection();
+    await pool.getConnection();
     console.log("ket noi database thanh cong");
 }
 
