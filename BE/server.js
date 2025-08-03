@@ -9,6 +9,7 @@ import courseRouter from "./router/courseRouter.js";
 import courseTypeRouter from "./router/courseTypeRouter.js";
 import lessonRouter from "./router/lessonRouter.js";
 import documentRouter from "./router/documentRouter.js";
+import exerciseRouter from "./router/exerciseRouter.js";
 
 const app = express();
 const port = 4000;
@@ -30,7 +31,7 @@ app.use("/api/courseType", courseTypeRouter);
 app.use("/api/course", courseRouter);
 app.use("/api/lesson", lessonRouter);
 app.use("/api/document", documentRouter);
-
+app.use("/api/exercise", exerciseRouter)
 app.listen(port, () => {
     console.log("da khoi tao", port)
 })
