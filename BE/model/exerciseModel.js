@@ -53,7 +53,7 @@ const addAnswerModel = async (cauHoi_id, ifAnswers) => {
   return { message: "them cau traa loi thnah cong" };
 };
 
-const getListExerciseModel = async () => {
+const getListExerciseModel = async (khoaHoc_id) => {
   const getListExerCise = `SELECT 
     ANY_VALUE(bkt.BKT_id) AS BKT_id, 
     ANY_VALUE(bkt.tenBKT) AS tenBKT, 
@@ -64,11 +64,12 @@ const getListExerciseModel = async () => {
   LEFT JOIN khoahoc kh ON kh.khoaHoc_id = bkt.khoaHoc_id
   LEFT JOIN taikhoan tk ON tk.taiKhoan_id = bkt.nguoiTao_id
   
+  WHERE kh.khoaHoc_id = ?
   GROUP BY bkt.BKT_id
   ORDER BY bkt.ngayTao DESC
   `;
 
-  const [listExercise] = await pool.execute(getListExerCise);
+  const [listExercise] = await pool.execute(getListExerCise, [khoaHoc_id]);
   return {
     message: "danh sach bai kiem tra",
     result: listExercise,

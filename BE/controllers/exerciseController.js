@@ -51,6 +51,7 @@ const deleteAnswer = async (req,res) => {
 }
 
 const getListExerCise = async (req, res) => {
+    const {khoaHoc_id} = req.query;
     const {message, result} = await getListExerciseModel();
     return res.json({message, result})
 }

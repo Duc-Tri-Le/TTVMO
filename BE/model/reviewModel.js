@@ -1,8 +1,8 @@
 import { pool } from "../config/database.js";
-import fs from  "fs";
+import fs from "fs";
 import path from "path";
 import { __dirname, __filename } from "../uploads/url.js";
-import { connect } from "http2";
+
 
 const addReviewModel = async (ifReview, ifImage) => {
   const connection = await pool.getConnection();
@@ -10,45 +10,99 @@ const addReviewModel = async (ifReview, ifImage) => {
     await connection.beginTransaction();
 
     const review_id = await insertReview(connection, ifReview);
-
-    ifImage.map((image) => {
-      return [review_id, image.link_image];
+    // console.log('====================================');
+    // console.log(review_id);
+    // console.log('====================================');
+   if(ifImage.length >  0){
+    const imageValues = ifImage.map((image,index) => {
+      return [review_id, image];
     });
+    // console.log('====================================');
+    // console.log(imageValues);
+    // console.log('====================================');
+    await insertImageReview(connection, imageValues);
 
-    await insertImageReview (connection, ifImage);
-
+   }
     connection.commit();
     return {
-      message : "them danh gia thanh cong"
-    }
+      message: "them danh gia thanh cong",
+    };
   } catch (error) {
+    console.log('====================================');
+    console.log(error);
+    console.log('====================================');
     connection.rollback();
+  } finally{
+    connection.release()
   }
 };
 
-const updateReviewModel = async (review_id, ifReview, ifImage) => {
+const updateReviewModel = async (review_id, ifReview) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
-    if(ifReview) {
-      await updateReview(connection, review_id, ifReview);
-    }
-    if(ifImage) {
-      await update_image_review(connection, review_id, ifImage);
-    }
-
+    await updateReview(connection, review_id, ifReview);
     connection.commit();
-    return {message : "cap nhat review thanh cong"}
+    return { message: "cap nhat review thanh cong" };
   } catch (error) {
     console.log(error);
-    connection.rollback()
+    connection.rollback();
+  }finally{
+    connection.release();
   }
-}
+};
 
 const deleteReviewModel = async (review_id) => {
-  const deleteReview = `delete from review where review_id = ?`;
-  await pool.execute(deleteReview, [review_id]);
-}
+  const connection = await pool.getConnection();
+  try {
+    const image = `select link_image from image_review where review_id = ?`;
+    const [result] = await connection.execute(image, [review_id]);
+
+    if (result.length > 0 && result[0].link_image !== null) {
+      const path_image = path.join(__dirname, "images", result[0].link_image);
+      if (fs.existsSync(path_image)) {
+        fs.unlinkSync(path_image);
+      }
+    }
+
+    const deleteReview = `delete from review where review_id = ?`;
+    await pool.execute(deleteReview, [review_id]);
+
+    connection.commit();
+    return {
+      message: "xoa danh gia thanh cong",
+    };
+  } catch (error) {
+    console.log(error);
+    connection.rollback();
+  }finally {
+    connection.release();
+  }
+};
+
+const getReviewModel = async (khoaHoc_id) => {
+  const getReview = `select  rv.review_id, rv.content, rv.create_at, rv.update_at, rv.user_id, rv.parent_id,
+  group_concat(fb.content SEPARATOR "/") as fb_content, 
+  group_concat(distinct fb.review_id) as fb_review_id,
+  any_value ( fb.create_at) as fb_create_at, 
+  any_value ( fb.update_at) as fb_update_at, 
+  any_value ( fb.user_id) as fb_user_id, 
+  any_value ( fb.parent_id) as fb_parent_id
+  
+  from review rv
+  left join review fb on rv.review_id = fb.parent_id
+
+  where rv.khoaHoc_id = ?
+  
+  group by rv.review_id;`;
+
+  const [reviews] = await pool.execute(getReview, [khoaHoc_id]);
+
+  return {
+    message : `danh sach danh gia va phan hoi cua khoa hoc_id : ${khoaHoc_id}`,
+    result : reviews
+  }
+};
 
 const insertReview = async (connection, ifReview) => {
   const fields = [];
@@ -59,51 +113,37 @@ const insertReview = async (connection, ifReview) => {
     if (ifReview[key] !== undefined) {
       fields.push(key);
       values.push(ifReview[key]);
-      daugiatri.push("? ");
+      daugiatri.push("?");
     }
   }
-  const sql = `insert into review(${fields.join(",")}) values(${values.join(
+  const sql = `insert into review(${fields.join(",")}) values(${daugiatri.join(
     ", "
   )})`;
-  const [result] = await connection.execute(insertReview, values);
+  const [result] = await connection.execute(sql, values);
   return result.insertId;
 };
 
-const insertImageReview = async (connection, ifImage) => {
-    const insertImage = `insert into image_review(review_id, link_image) values (?, ?)`;
-    await connection.query(insertImage, [ifImage])
+const insertImageReview = async (connection, imageValues) => {
+  const insertImage = `insert into image_review(review_id, link_image) values ?`;
+  await connection.query(insertImage, [imageValues]);
 };
 
-const updateReview = async (connection, review_id, ifReview) =>{
-  
+const updateReview = async (connection, review_id, ifReview) => {
   const fields = [];
   const values = [];
 
-  for(const key in ifReview) {
-    if(ifReview !== undefined){
+  for (const key in ifReview) {
+    if (ifReview !== undefined) {
       fields.push(`${key} = ?`);
-      values.push(ifReview[key])
+      values.push(ifReview[key]);
     }
   }
-  values.push(review_id)
+  values.push(review_id);
 
-  const updateReview = `update review set ${fields.join(", ")} where review_id = ?`;
+  const updateReview = `update review set ${fields.join(
+    ", "
+  )} where review_id = ?`;
   await connection.execute(updateReview, values);
-}
+};
 
-const update_image_review = async (connection, review_id, ifImage) => {
-  const select_link_image = `select link_image from image_review where review_id = ?`;
-  const [link_images] = await connection.execute(select_link_image);
-  link_images.map((link_image) => {
-    const path_image = path.join(__dirname, "images", link_image.link_image);
-    if(fs.existsSync(path_image)){
-      fs.unlinkSync(path_image);
-    }
-  }) 
-  ifImage.map((link_image) => {
-    return [review_id, link_image]
-  });
-  await insertImageReview(connection, ifReview)
-}
-
-export  {addReviewModel, updateReviewModel, deleteReviewModel}
+export { addReviewModel, updateReviewModel, deleteReviewModel, getReviewModel };
