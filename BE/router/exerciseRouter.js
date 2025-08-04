@@ -1,15 +1,20 @@
 import express from "express";
-import { addAnswer, addExercise, addQuestion, deleteAnswer, deleteExercise, deleteQUestion, getDetailExercise, getListExerCise } from "../controllers/exerciseController.js";
-
+import { addAnswer, addExercise, addQuestion, deleteAnswer, deleteExercise, deleteQUestion, doExam, getDetailExercise, getListExerCise, startExam, submitExam } from "../controllers/exerciseController.js";
+import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 const exerciseRouter = express.Router();
 
-exerciseRouter.put("/addExercise", addExercise);
-exerciseRouter.put("/addQuestion", addQuestion);
-exerciseRouter.put("/addAnswer", addAnswer);
-exerciseRouter.delete("/deleteExercise", deleteExercise);
-exerciseRouter.delete("/deleteQuestion", deleteQUestion);
-exerciseRouter.delete("/deleteAnswer", deleteAnswer);
+//giang_vien
+exerciseRouter.put("/addExercise",authMiddleware, authorizeRoles("giang_vien"), addExercise);
+exerciseRouter.put("/addQuestion",authMiddleware, authorizeRoles("giang_vien"), addQuestion);
+exerciseRouter.put("/addAnswer",authMiddleware, authorizeRoles("giang_vien"), addAnswer);
+exerciseRouter.delete("/deleteExercise",authMiddleware, authorizeRoles("giang_vien"), deleteExercise);
+exerciseRouter.delete("/deleteQuestion",authMiddleware, authorizeRoles("giang_vien"), deleteQUestion);
+exerciseRouter.delete("/deleteAnswer",authMiddleware, authorizeRoles("giang_vien"), deleteAnswer);
+//all
 exerciseRouter.get("/listExercise", getListExerCise);
 exerciseRouter.get("/detailExercise", getDetailExercise);
+exerciseRouter.put("/startExam", startExam);
+exerciseRouter.put("/doExam", doExam);
+exerciseRouter.put("/submitExam", submitExam);
 
 export default exerciseRouter;
