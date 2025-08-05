@@ -2,8 +2,8 @@ import { acceptInstructorModel, getDetailUserModel, getUsersModel, loginAdminMod
 
 const loginUserController = async (req, res) =>{
     try {
-        const {tenDangNhap, password, email}= req.body;
-        const {result, token} = await loginUserModel(tenDangNhap, password, email);
+        const {password, email}= req.body;
+        const {result, token} = await loginUserModel(password, email);
         return res.json({result, token})
     } catch (error) {
         console.log(error);

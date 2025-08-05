@@ -6,9 +6,12 @@ const configRoutes =  {
 }
 
 const privateRouter = [
+]
+
+const publicRouter = [
     {
         path : configRoutes.signIn_Up, element : signIn_up
     }
 ]
 
-export {configRoutes, privateRouter}
+export {configRoutes, publicRouter}
