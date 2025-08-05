@@ -1,5 +1,5 @@
 import express from "express";
-import { addAnswer, addExercise, addQuestion, deleteAnswer, deleteExercise, deleteQUestion, doExam, getDetailExercise, getListExerCise, startExam, submitExam } from "../controllers/exerciseController.js";
+import { addAnswer, addExercise, addQuestion, deleteAnswer, deleteExercise, deleteQUestion, getDetailExercise, getListExerCise, startExam, submitExam } from "../controllers/exerciseController.js";
 import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 const exerciseRouter = express.Router();
 
@@ -14,7 +14,6 @@ exerciseRouter.delete("/deleteAnswer",authMiddleware, authorizeRoles("giang_vien
 exerciseRouter.get("/listExercise", getListExerCise);
 exerciseRouter.get("/detailExercise", getDetailExercise);
 exerciseRouter.put("/startExam", startExam);
-exerciseRouter.put("/doExam", doExam);
 exerciseRouter.put("/submitExam", submitExam);
 
 export default exerciseRouter;

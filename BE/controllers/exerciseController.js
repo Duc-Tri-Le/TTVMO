@@ -7,7 +7,6 @@ import {
   startExamModel,
   getDetailExerciseModel,
   getListExerciseModel,
-  doExamModel,
   submitExamModel,
 } from "../model/exerciseModel.js";
 
@@ -82,24 +81,28 @@ const startExam = async (req, res) => {
       number_question,
       time_limit
     );
-    return res.json({message, user_exam_id});
+    // console.log('====================================');
+    // console.log({ user_id, exam_id, number_question, time_limit });
+    // console.log('====================================');
+    return res.json({ message, user_exam_id });
   } catch (error) {
     console.log(error);
   }
 };
 
-const doExam = async (req, res) => {
-  const { user_exam_id, cauHoi_id, list_content_answer, list_CTL_id } =
+const submitExam = async (req, res) => {
+  const { user_exam_id, list_question_id, list_content_answer, list_CTL_id } =
     req.body;
-    const {message} = await doExamModel(user_exam_id, cauHoi_id, list_content_answer, list_CTL_id);
-    return res.json(message)
+    console.log({ user_exam_id, list_question_id, list_content_answer, list_CTL_id });
+  const { message, score, duration } = await submitExamModel(
+    user_exam_id,
+    list_question_id,
+    list_content_answer,
+    list_CTL_id
+  );
+  return res.json({ message, score, duration });
 };
 
-const submitExam =async (req, res) => {
-    const {user_exam_id} = req.body;
-    const {message, score, duration} = await submitExamModel(user_exam_id);
-    return res.json({message,score,duration});
-}
 export {
   addExercise,
   addQuestion,
@@ -110,6 +113,5 @@ export {
   getListExerCise,
   getDetailExercise,
   startExam,
-  doExam,
-  submitExam
+  submitExam,
 };

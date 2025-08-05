@@ -176,51 +176,54 @@ const startExamModel = async (
   return { message: "bat dau lam bai", user_exam_id: exam.insertId };
 };
 
-const doExamModel = async (
+const selectAnswerModel = async (
+  connection,
   user_exam_id,
-  cauHoi_id,
+  list_question_id,
+  list_content_answer,
+  list_CTL_id
+) => {
+  try {
+    const get_is_correct = `select dungSai from cautraloi where CTL_id in (?)`;
+    const [result] = await connection.query(get_is_correct, [list_CTL_id]);
+    // console.log(result);
+    const user_exam = result.map((is_correct, index) => {
+      return [
+        user_exam_id,
+        list_question_id[index],
+        list_content_answer[index],
+        is_correct.dungSai,
+        list_CTL_id[index],
+      ];
+    });
+
+    // consol
+    const insertUserAnswer = `insert into userAnswer(user_exam_id, question_id, content_answer, is_correct, answer_id) values ?`;
+    await connection.query(insertUserAnswer, [user_exam]);
+
+  } catch (error) {
+    throw error
+  }
+};
+
+const submitExamModel = async (
+  user_exam_id,
+  list_question_id,
   list_content_answer,
   list_CTL_id
 ) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
-    const get_is_correct = `select dungSai from cautraloi where CTL_id in (?)`;
-    const [result] = await connection.query(get_is_correct, [list_CTL_id]);
-    const user_exam = result.map((is_correct, index) => {
-      return [
-        user_exam_id,
-        cauHoi_id,
-        list_content_answer[index],
-        is_correct.dungSai,
-      ];
-    });
 
-    console.log("====================================");
-    console.log(user_exam);
-    console.log("====================================");
+    await selectAnswerModel(
+      connection,
+      user_exam_id,
+      list_question_id,
+      list_content_answer,
+      list_CTL_id
+    );
 
-    const insertUserAnswer = `insert into userAnswer(user_exam_id, question_id, content_answer, is_correct) values ?`;
-    await connection.query(insertUserAnswer, [user_exam]);
-
-    connection.commit();
-    return {
-      message: "chon cau  tra loi thanh cong",
-    };
-  } catch (error) {
-    console.log("====================================");
-    console.log(error);
-    console.log("====================================");
-    connection.rollback();
-  } finally {
-    connection.release();
-  }
-};
-
-const submitExamModel = async (user_exam_id) => {
-  const connection = await pool.getConnection();
-  try {
-    await connection.beginTransaction();
     const selectAllCorrect = `select 
     count(*) as number_correct
 
@@ -230,9 +233,11 @@ const submitExamModel = async (user_exam_id) => {
 
     group by user_exam_id`;
 
-    const [allCorrect] = await pool.execute(selectAllCorrect, [user_exam_id]);
-    const number_correct = allCorrect.length;
-
+    const [allCorrect] = await connection.execute(selectAllCorrect, [user_exam_id]);
+    const number_correct = allCorrect[0].number_correct;
+    // console.log('====================================');
+    // console.log(number_correct);
+    // console.log('====================================');
     const getUserExam = `select 
     number_question, start_at, time_limit
     
@@ -240,14 +245,27 @@ const submitExamModel = async (user_exam_id) => {
     where user_exam_id = ?`;
 
     const [userExam] = await connection.execute(getUserExam, [user_exam_id]);
-    const score = number_correct / userExam[0].ux_number_question;
+    console.log("====================================");
+    console.log(userExam);
+    console.log("====================================");
+    //score
+    const score = number_correct / userExam[0].number_question;
+    //time
     const start_at = new Date(userExam[0].start_at);
     const now = new Date();
-    const duration = new Date(now - start_at.getTime());
+    const durationMs = now - start_at.getTime();
+    const totalSeconds = Math.floor(durationMs / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const duration = `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
-    const insertUserExam = `insert into userExam(score, duration) values(?,?) where user_exam_id = ?`;
+    const insertUserExam = `update userExam set score = ?, duration = ? where user_exam_id = ?`;
     await connection.execute(insertUserExam, [score, duration, user_exam_id]);
 
+    await connection.commit()
     return {
       message: "hoan thanh bai thi",
       score,
@@ -257,7 +275,7 @@ const submitExamModel = async (user_exam_id) => {
     console.log("====================================");
     console.log(error);
     console.log("====================================");
-    connection.rollback();
+    await connection.rollback();
   } finally {
     connection.release();
   }
@@ -272,7 +290,6 @@ export {
   deleteQUestionModel,
   getListExerciseModel,
   getDetailExerciseModel,
-  doExamModel,
   startExamModel,
   submitExamModel,
 };
