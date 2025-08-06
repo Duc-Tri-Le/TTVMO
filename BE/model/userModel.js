@@ -13,14 +13,15 @@ const loginUserModel = async (password, email) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
-    const selectUSer = `select taiKhoan_id, matKhau, vaiTro_id from taikhoan where and email = ?`;
+    const selectUSer = `select taiKhoan_id, matKhau, vaiTro_id, tenDangNhap from taikhoan where email = ?`;
     const [userIf] = await connection.execute(selectUSer, [email]);
     if (userIf.length === 0) {
       return { result: { err: "sai thong tin dang nhap", success: false } };
     }
 
-    const isPassword = await bcrypt.compare(password, matKhau);
-    if (!isPassword) return { result: { err: "mat khau sai", success: false } };
+    const isPassword = await bcrypt.compare(password, userIf[0].matKhau);
+    if (!isPassword)
+      return { result: { error: "mat khau sai", success: false } };
 
     const getTenVaiTro = `select tenVaiTro from vaitro where vaiTro_id = ?`;
     const [tenVaiTro] = await connection.execute(getTenVaiTro, [
@@ -33,8 +34,12 @@ const loginUserModel = async (password, email) => {
     );
 
     return {
-      success: true,
-      result: { message: "dang nhap thanh cong", tenDangNhap, email },
+      result: {
+        message: "dang nhap thanh cong",
+        username: userIf[0].tenDangNhap,
+        email,
+        success: true,
+      },
       token,
     };
   } catch (error) {
@@ -45,7 +50,7 @@ const loginUserModel = async (password, email) => {
   }
 };
 
-const registerUSerModel = async (tenDangNhap, password, email, role, SDT) => {
+const registerUSerModel = async (username, password, email, role, SDT) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -72,7 +77,7 @@ const registerUSerModel = async (tenDangNhap, password, email, role, SDT) => {
 
     const insertUser = `insert into taikhoan(tenDangNhap, matKhau, email, SDT, vaiTro_id) values(?,?,?,?, ?)`;
     const [rows] = await connection.execute(insertUser, [
-      tenDangNhap,
+      username,
       hashPassword,
       email,
       SDT,
@@ -86,7 +91,7 @@ const registerUSerModel = async (tenDangNhap, password, email, role, SDT) => {
       result: {
         taiKhoan_id,
         role,
-        tenDangNhap,
+        username,
         email,
         success: true,
       },

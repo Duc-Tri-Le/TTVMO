@@ -11,9 +11,9 @@ const loginUserController = async (req, res) =>{
 }
 
 const registerUSer = async (req, res) => {
-    const {tenDangNhap, email, password, SDT} = req.body;
+    const {username, email, password, SDT} = req.body;
     const role = "hoc_vien";
-    const {result, token} = await registerUSerModel(tenDangNhap, password, email, role, SDT);
+    const {result, token} = await registerUSerModel(username, password, email, role, SDT);
     return res.json({result, token})
 }
 

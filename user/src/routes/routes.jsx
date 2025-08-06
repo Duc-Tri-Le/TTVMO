@@ -1,7 +1,7 @@
-import signIn_up from "../pages/signIn_Up/signIn_up.jsx"
+import SignInUp from "../pages/SignInUp/SignInUp.jsx"
 
 const configRoutes =  {
-    signIn_Up : "/",
+    SignInUp : "/sign-in-up",
     home : "/home"
 }
 
@@ -10,7 +10,7 @@ const privateRouter = [
 
 const publicRouter = [
     {
-        path : configRoutes.signIn_Up, element : signIn_up
+        path : configRoutes.SignInUp, element : SignInUp
     }
 ]
 

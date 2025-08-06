@@ -7,7 +7,7 @@ const userRouter = express.Router();
 
 
 userRouter.post("/loginUser", loginUserController);
-userRouter.put("/registerUser", registerUSer);
+userRouter.post("/registerUser", registerUSer);
 userRouter.post("/loginAdmin", loginAdmin);
 userRouter.get("/getDetailUser", getDetailUser);
 userRouter.patch("/updateUser", updateUser)

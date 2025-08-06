@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import { publicRouter } from './routes/routes.jsx';
-import "dotenv/config";
 import './App.css'
 
 function App() {
