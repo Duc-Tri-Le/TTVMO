@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { StoreContext } from "../../../context/storeContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 const SignInUp = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,6 +11,7 @@ const SignInUp = () => {
   const [loading, setLoading] = useState(false);
   const [SDT, setSDT] = useState("");
   const { URL } = useContext(StoreContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +39,7 @@ const SignInUp = () => {
         alert(data?.result.error);
       } else {
         localStorage.setItem("token", data.token);
+        navigate("/home");
         alert(`${isLogin ? "Đăng nhập" : "Đăng ký"} thành công!`);
       }
 

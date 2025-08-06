@@ -1,0 +1,58 @@
+.container-home {
+    width: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f6f6f6;
+}
+
+/* Header */
+.header-home {
+    background-color: #ffffff;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Banner + Sidebar layout */
+.banner-sidebar-home {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Sidebar chiếm cố định bên trái */
+.sidebar-home {
+    width: 250px;
+    /* sidebar rộng cố định */
+    flex-shrink: 0;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Banner chiếm phần còn lại */
+.banner-home {
+    flex: 1;
+    background-color: #e8f3fc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Course list */
+.course-list-home {
+    padding: 30px 20px;
+    background-color: #ffffff;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Footer */
+.footer-home {
+    background-color: #20232a;
+    color: #ffffff;
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 20px;
+}

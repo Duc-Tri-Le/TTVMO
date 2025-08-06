@@ -39,6 +39,7 @@ const loginUserModel = async (password, email) => {
         username: userIf[0].tenDangNhap,
         email,
         success: true,
+        user_id : userIf[0].taiKhoan_id
       },
       token,
     };
@@ -89,7 +90,7 @@ const registerUSerModel = async (username, password, email, role, SDT) => {
     connection.commit();
     return {
       result: {
-        taiKhoan_id,
+        user_id : taiKhoan_id,
         role,
         username,
         email,
@@ -105,9 +106,9 @@ const registerUSerModel = async (username, password, email, role, SDT) => {
   }
 };
 
-const loginAdminModel = async (tenDangNhap, password, email) => {
+const loginAdminModel = async (username, password, email) => {
   const selectAdmin = `select matKhau, vaiTro_id, taiKhoan_id from taikhoan where tenDangNhap = ? and email = ?`;
-  const [adminIf] = await pool.execute(selectAdmin, [tenDangNhap, email]);
+  const [adminIf] = await pool.execute(selectAdmin, [username, email]);
 
   const { taiKhoan_id, matKhau } = adminIf[0];
 
@@ -123,7 +124,7 @@ const loginAdminModel = async (tenDangNhap, password, email) => {
     result: {
       success: true,
       message: "dang nhap thanh cong",
-      TTUser: { tenDangNhap, email, taiKhoan_id },
+      TTUser: { username, email, taiKhoan_id },
     },
     token,
   };

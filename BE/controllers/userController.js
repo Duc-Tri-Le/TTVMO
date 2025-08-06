@@ -19,8 +19,9 @@ const registerUSer = async (req, res) => {
 
 const loginAdmin = async (req, res) => {
     try {
-        const {tenDangNhap, password, email}= req.body;
-        const {result, token} = await loginAdminModel(tenDangNhap, password, email);
+        const {username, password, email}= req.body;
+        // console.log({username, password,email});
+        const {result, token} = await loginAdminModel(username, password, email);
         return res.json({result, token})
     } catch (error) {
         console.log(error);
