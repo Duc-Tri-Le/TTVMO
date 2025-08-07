@@ -1,9 +1,10 @@
-import Home from "../pages/Home/Home.jsx"
+import Instructor from "../pages/Instructor/Instructor.jsx"
 import SignIn from "../pages/SignIn/SignIn.jsx"
 
 const configRoutes = {
     SignIn : "/sign-in",
-    Home : "/home"
+    Instructor : "/instructor",
+    Course : "/course"
 }
 
 const publicRouter = [
@@ -11,8 +12,9 @@ const publicRouter = [
         path : configRoutes.SignIn, element : SignIn
     },
     {
-        path : configRoutes.Home, element : Home
+        path : configRoutes.Instructor, element: Instructor
     }
+    
 ]
 
 export {publicRouter}

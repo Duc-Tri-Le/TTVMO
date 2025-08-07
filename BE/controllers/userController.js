@@ -1,4 +1,4 @@
-import { acceptInstructorModel, getDetailUserModel, getUsersModel, loginAdminModel, loginUserModel, registerUSerModel, updateUSerModel } from "../model/userModel.js";
+import { acceptInstructorModel, deleteUserModel, getDetailUserModel, getInstructorModel, getUsersModel, lockUserModel, loginAdminModel, loginUserModel, registerUSerModel, updateUSerModel } from "../model/userModel.js";
 
 const loginUserController = async (req, res) =>{
     try {
@@ -30,8 +30,8 @@ const loginAdmin = async (req, res) => {
 
 const acceptInstructor = async (req, res) => {
     try {
-        const {taiKhoan_id} = req.body;
-        const {result} = await acceptInstructorModel(taiKhoan_id);
+        const {taiKhoan_id, action} = req.body;
+        const {result} = await acceptInstructorModel(taiKhoan_id, action);
         return res.json({
             result
         })
@@ -47,6 +47,11 @@ const getUSers = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+}
+
+const getInstructor = async (req, res) => {
+    const {result}  = await getInstructorModel();
+    return res.json(result)
 }
 
 const getDetailUser = async (req, res) =>{
@@ -66,4 +71,17 @@ const updateUser = async (req, res) =>{
     const {result} = await updateUSerModel(ifUsers);
     return res.json(result);
 }
-export {loginUserController, registerUSer, loginAdmin,acceptInstructor, getUSers, getDetailUser, updateUser}
+
+const deleteUser = async (req, res) => {
+    const {taiKhoan_id} = req.body;
+    const {result} = await deleteUserModel(taiKhoan_id);
+    return res.json(result)
+}
+
+const lockUser = async (req,res) => {
+    const {taiKhoan_id, action} = req.body;
+    const {result} = await lockUserModel(taiKhoan_id, action);
+    res.json(result)
+}
+
+export {loginUserController, registerUSer, loginAdmin,acceptInstructor, getUSers, getDetailUser, updateUser, getInstructor, deleteUser, lockUser}

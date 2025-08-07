@@ -1,21 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./Header.css"
+import "./Header.css";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-    const [token, setToken]  = useState("");
-    const [userId, setUserId] = useState("");
+  const [token, setToken] = useState("");
+  const [userId, setUserId] = useState("");
+  const navigate = useNavigate();
 
   const handleLogout = (e) => {
     e.preventDefault();
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    navigate("/sign-in");
     window.location.reload();
   };
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
     setUserId(localStorage.getItem("userId"));
-  }, [])
+  }, []);
 
   return (
     <div className="header-container">
@@ -31,7 +34,7 @@ const Header = () => {
             </button>
           </>
         ) : (
-            <>
+          <>
             <a href="/sign-in" className="header-btn login">
               Sign In
             </a>

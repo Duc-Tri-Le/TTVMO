@@ -39,7 +39,7 @@ const loginUserModel = async (password, email) => {
         username: userIf[0].tenDangNhap,
         email,
         success: true,
-        user_id : userIf[0].taiKhoan_id
+        user_id: userIf[0].taiKhoan_id,
       },
       token,
     };
@@ -90,7 +90,7 @@ const registerUSerModel = async (username, password, email, role, SDT) => {
     connection.commit();
     return {
       result: {
-        user_id : taiKhoan_id,
+        user_id: taiKhoan_id,
         role,
         username,
         email,
@@ -130,28 +130,51 @@ const loginAdminModel = async (username, password, email) => {
   };
 };
 
-const acceptInstructorModel = async (taiKhoan_id) => {
-  const update = `update taikhoan set vaiTro_id = 3 where taiKhoan_id = ?`;
-  await pool.execute(update, [taiKhoan_id]);
-  return {
-    result: {
+const acceptInstructorModel = async (taiKhoan_id, action) => {
+  let result = {}
+  if (action === "accept") {
+    const update = `update taikhoan set vaiTro_id = 3, status = "accepted" where taiKhoan_id = ?`;
+    await pool.execute(update, [taiKhoan_id]);
+    result = {
       success: true,
       message: "da phe duyet tai khoan lam giang vien",
-    },
+    }
+  }else {
+    const update = `update taikhoan set status = "", vaiTro_id = 1 where taiKhoan_id = ?`;
+    await pool.execute(update, [taiKhoan_id]);
+    result = {
+      success : false,
+      message : "ko phe duyet lam giang vien"
+    }
+  }
+  return {
+    result
   };
 };
 
 const getUsersModel = async () => {
   const getUser = `select * from taikhoan where vaiTro_id in (1,3)`;
   const [rows] = await pool.execute(getUser);
+  const result = rows.map(({ matKhau, ...rest }) => rest);
   return {
-    result: {
-      success: true,
-      DSND: rows,
-    },
+    result,
   };
 };
 
+const getInstructorModel = async () => {
+  const getInstructor = `select * from taikhoan where vaiTro_id = 3`;
+  const [rows] = await pool.execute(getInstructor);
+
+  const User = `select * from taikhoan where vaiTro_id = 1 and status = 'waiting for'`;
+  const [rows2] = await pool.execute(User);
+
+  const list = [...rows, ...rows2];
+  const result = list.map(({ matKhau, ...rest }) => rest);
+
+  return {
+    result,
+  };
+};
 const getDetailUserModel = async (taiKhoan_id) => {
   const getDetail = `select * from taikhoan where taiKhoan_id = ?`;
   const [rows] = await pool.execute(getDetail, [taiKhoan_id]);
@@ -200,6 +223,36 @@ const updateUSerModel = async ({ taiKhoan_id, ...ifUser }) => {
   }
 };
 
+const deleteUserModel = async (taiKhoan_id) => {
+  const deleteUser = `delete from taikhoan where taiKhoan_id = ?`;
+  await pool.execute(deleteUser, [taiKhoan_id]);
+  return {
+    result : {
+      message : "da xoa tai khoan"
+    }
+  }
+};
+
+const lockUserModel = async (taiKhoan_id, action) => {
+  let status = "";
+  let result = {};
+  if(action === "lock"){
+    status = "locked";
+    result = {
+      message : "da khoa tai khoan"
+    }
+  }else{
+    result = {
+      message : "da mo khoa tai khoan"
+    }
+  }
+  const lockUser = `update taikhoan set status = ? where taiKhoan_id = ?`;
+  await pool.execute(lockUser, [status, taiKhoan_id]);
+  return {
+    result
+  }
+}
+
 export {
   loginUserModel,
   registerUSerModel,
@@ -208,4 +261,7 @@ export {
   getUsersModel,
   getDetailUserModel,
   updateUSerModel,
+  getInstructorModel,
+  deleteUserModel,
+  lockUserModel
 };

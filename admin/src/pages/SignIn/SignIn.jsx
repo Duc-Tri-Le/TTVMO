@@ -34,7 +34,7 @@ const SignIn = () => {
         localStorage.setItem("userId", data.result.TTUser.taiKhoan_id);
         setEmail("");
         setPassword("");
-        navigate("/home");
+        navigate("/instructor");
       }
       console.log(data);
     } catch (error) {

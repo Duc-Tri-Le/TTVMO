@@ -2,8 +2,8 @@ import Home from "../pages/Home/home.jsx"
 import SignInUp from "../pages/SignInUp/SignInUp.jsx"
 
 const configRoutes =  {
+    home : "/home",
     SignInUp : "/sign-in-up",
-    home : "/home"
 }
 
 const privateRouter = [

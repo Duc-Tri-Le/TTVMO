@@ -1,0 +1,58 @@
+.instructor-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.instructor-select {
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.instructor-select span {
+    cursor: pointer;
+    padding: 8px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease-in-out;
+}
+
+.instructor-select span:hover {
+    background-color: #e0e0e0;
+}
+
+.instructor-select .active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+.instructor-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.instructor-table th,
+.instructor-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.instructor-table th {
+    background-color: #f2f2f2;
+    font-weight: 600;
+}
+
+.instructor-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.instructor-table td:hover {
+    background-color: #e9f5ff;
+    cursor: pointer;
+    transition: 0.2s;
+}
