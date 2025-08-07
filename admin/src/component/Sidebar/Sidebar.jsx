@@ -1,4 +1,5 @@
 import React from "react";
+import "./Sidebar.css";
 
 const Sidebar = () => {
   const currentPath = window.location.pathname;

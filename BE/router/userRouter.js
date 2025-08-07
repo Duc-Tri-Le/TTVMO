@@ -3,7 +3,7 @@ import {
   deleteUser,
   getDetailUser,
   getInstructor,
-  getUSers,
+  getStudent,
   lockUser,
   loginAdmin,
   loginUserController,
@@ -30,10 +30,10 @@ userRouter.patch(
   acceptInstructor
 );
 userRouter.get(
-  "/getUsers",
+  "/get-student",
   authMiddleware,
   authorizeRoles("nguoi_quan_ly"),
-  getUSers
+  getStudent
 );
 userRouter.get(
   "/getInstructor",

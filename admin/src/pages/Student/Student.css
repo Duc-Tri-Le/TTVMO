@@ -1,0 +1,64 @@
+.student-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.student-select {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.student-select span {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: 0.3s;
+}
+
+.student-select span:hover {
+    background-color: #e0e0e0;
+}
+
+.student-select span.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.student-table table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.student-table th,
+.student-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.student-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.student-table td:hover {
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+/* Optional: Responsive */
+@media (max-width: 768px) {
+    .student-table table {
+        font-size: 14px;
+        min-width: unset;
+    }
+
+    .student-select {
+        flex-wrap: wrap;
+    }
+}

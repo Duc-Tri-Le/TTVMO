@@ -1,0 +1,86 @@
+/* Sidebar tổng thể */
+/* .sidebar {
+    width: 250px;
+    height: 100%;
+    background-color: #f8f9fa;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: all 0.3s ease-in-out;
+    overflow-y: auto;
+    flex:1
+} */
+
+/* Các tùy chọn trong sidebar */
+.sidebar-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+/* Mỗi mục trong sidebar */
+.sidebar-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-option img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+/* Hiệu ứng hover */
+.sidebar-option:hover {
+    background-color: #e0f7fa;
+    color: #007bff;
+}
+
+/* Khi mục được chọn (active) */
+.sidebar-option.active {
+    background-color: aliceblue;
+    border-left: 5px solid tomato;
+    color: tomato;
+    font-weight: bold;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .sidebar-option {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .sidebar-option img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Ẩn sidebar trên điện thoại (tuỳ chọn) */
+@media screen and (max-width: 480px) {
+    .sidebar {
+        width: 0;
+        overflow: hidden;
+    }
+
+    .sidebar.open {
+        width: 200px;
+    }
+}

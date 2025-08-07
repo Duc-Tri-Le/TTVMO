@@ -6,7 +6,6 @@ const Instructor = () => {
   const { URL, token, listInstructor, deleteUser, lockUser } =
     useContext(StoreContext);
   const [statusFilter, setStatusFilter] = useState("all");
-
   const instructorFilter = listInstructor?.filter((user) => {
     if (statusFilter === "all") {
       return user.status !== "waiting for" && user.status !== "locked";
@@ -28,7 +27,7 @@ const Instructor = () => {
     window.location.reload();
   };
 
-  // console.log({statusFilter, instructorFilter});
+  console.log({statusFilter, instructorFilter});
   return (
     <div className="instructor-container">
       <div className="instructor-select">

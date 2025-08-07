@@ -17,7 +17,7 @@
 }
 
 .sidebar {
-    width: 250px;
+    width: 25%;
     flex-shrink: 0;
     overflow-y: auto;
     background-color: #f0f0f0;

@@ -152,12 +152,16 @@ const acceptInstructorModel = async (taiKhoan_id, action) => {
   };
 };
 
-const getUsersModel = async () => {
-  const getUser = `select * from taikhoan where vaiTro_id in (1,3)`;
+const getStudentModel = async () => {
+  const getUser = `select * from taikhoan where vaiTro_id = 1`;
   const [rows] = await pool.execute(getUser);
   const result = rows.map(({ matKhau, ...rest }) => rest);
   return {
-    result,
+    result :
+    {
+      message : "danh sach hoc vien",
+      listStudent : result
+    }
   };
 };
 
@@ -258,7 +262,7 @@ export {
   registerUSerModel,
   loginAdminModel,
   acceptInstructorModel,
-  getUsersModel,
+  getStudentModel,
   getDetailUserModel,
   updateUSerModel,
   getInstructorModel,

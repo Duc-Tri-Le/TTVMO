@@ -10,6 +10,7 @@ const StoreContextProvider = (props) => {
   const location = useLocation();
   const routePath = location.pathname;
   const [listInstructor, setListInstructor] = useState([]);
+  const [listStudent, setListStudent] = useState([]);
 
   useEffect(() => {
     const loadData = () => {
@@ -38,15 +39,33 @@ const StoreContextProvider = (props) => {
     }
   }
 
+  const getStudent = async (token) => {
+    try {
+      const response = await fetch(`${URL}/api/user/get-student`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      const data = await response.json();
+      setListStudent(data.listStudent);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   useEffect(() => {
     const getData = async () => {
       const tokenFromStorage = localStorage.getItem("token");
       if (routePath === "/instructor" && tokenFromStorage) {
         await getListInstructor(tokenFromStorage);
+      } else if (routePath === "/student" && tokenFromStorage) {
+        await getStudent(tokenFromStorage);
       }
     };
     getData();
-  }, [routePath]);
+  }, []);
 
   const deleteUser = async (taiKhoan_id) => {
     const response = await fetch(`${URL}/api/user/deleteUser`, {
@@ -59,7 +78,8 @@ const StoreContextProvider = (props) => {
     });
     const data = await response.json();
     alert(data.message);
-    window.location.reload();
+    setListStudent(prev => prev.filter(user => user.taiKhoan_id !== taiKhoan_id));
+    setListInstructor(prev => prev.filter(user => user.taiKhoan_id !== taiKhoan_id));
   };
 
   const lockUser = async (taiKhoan_id, action) => {
@@ -74,7 +94,21 @@ const StoreContextProvider = (props) => {
     const data = await response.json();
     console.log(data);
     alert(data.message);
-    window.location.reload();
+
+    setListStudent((prev) =>
+      prev.map((user) =>
+        user.taiKhoan_id === taiKhoan_id
+          ? { ...user, status: action === "lock" ? "locked" : "" }
+          : user
+      )
+    );
+    setListInstructor((prev) =>
+      prev.map((user) =>
+        user.taiKhoan_id === taiKhoan_id
+          ? { ...user, status: action === "lock" ? "locked" : "" }
+          : user
+      )
+    );
   };
 
   const ContextValue = {
@@ -83,7 +117,9 @@ const StoreContextProvider = (props) => {
     userId,
     listInstructor,
     deleteUser,
-    lockUser
+    lockUser,
+    getStudent,
+    listStudent,
   };
 
   return (
