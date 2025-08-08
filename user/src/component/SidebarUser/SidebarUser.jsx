@@ -1,7 +1,7 @@
 import React from "react";
-import "./Sidebar.css";
+import "./SidebarUser.css";
 
-const Sidebar = () => {
+const SidebarUser = () => {
   const currentPath = window.location.pathname;
 
   const SidebarOption = ({ to, imgSrc, text, isActive }) => {
@@ -14,9 +14,9 @@ const Sidebar = () => {
   };
 
   const SidebarLink = [
-    { to: "/instructor", imgSrc: "", text: "Giảng viên" },
-    { to: "/student", imgSrc: "", text: "Học viên" },
-    { to: "/course", imgSrc: "", text: "Khoá học" },
+    { to: "/account/profile", imgSrc: "", text: "Thông tin người dùng" },
+    { to: "/user-course", imgSrc: "", text: "Khoá học đã tham gia" },
+    { to: "/course", imgSrc: "", text: "Course" },
   ];
 
   return (
@@ -36,4 +36,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarUser;

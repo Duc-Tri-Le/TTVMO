@@ -1,0 +1,34 @@
+/* Đặt container bao quanh các select */
+.course-type-container {
+    display: flex;
+    gap: 15px;
+    /* Khoảng cách giữa các select */
+    align-items: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    /* Nếu màn nhỏ thì tự xuống hàng */
+}
+
+/* Style chung cho select */
+.course-type-container select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    min-width: 200px;
+    background-color: white;
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* Hiệu ứng hover */
+.course-type-container select:hover {
+    border-color: #007bff;
+}
+
+/* Khi disable thì đổi màu */
+.course-type-container select:disabled {
+    background-color: #f1f1f1;
+    cursor: not-allowed;
+    color: #888;
+}

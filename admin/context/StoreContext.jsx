@@ -11,6 +11,7 @@ const StoreContextProvider = (props) => {
   const routePath = location.pathname;
   const [listInstructor, setListInstructor] = useState([]);
   const [listStudent, setListStudent] = useState([]);
+  const [listCourse, setListCourse] = useState([]);
 
   useEffect(() => {
     const loadData = () => {
@@ -20,13 +21,14 @@ const StoreContextProvider = (props) => {
     loadData();
   }, []);
 
-  async function getListInstructor(token) {
+  async function getListInstructor(tokenFromStorage) {
     try {
+      console.log(tokenFromStorage);
       const response = await fetch(`${URL}/api/user/getInstructor`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: tokenFromStorage,
         },
       });
 
@@ -34,22 +36,54 @@ const StoreContextProvider = (props) => {
       if (data.length > 0) {
         setListInstructor(data);
       }
+      async function getListInstructor(tokenFromStorage) {
+        try {
+          console.log(tokenFromStorage);
+          const response = await fetch(`${URL}/api/user/getInstructor`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: tokenFromStorage,
+            },
+          });
+
+          const data = await response.json();
+          setListInstructor(data);
+        } catch (error) {
+          console.log("error instructor : ", error);
+        }
+      }
     } catch (error) {
       console.log("error instructor : ", error);
     }
   }
 
-  const getStudent = async (token) => {
+  const getStudent = async (tokenFromStorage) => {
     try {
       const response = await fetch(`${URL}/api/user/get-student`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: tokenFromStorage,
         },
       });
       const data = await response.json();
       setListStudent(data.listStudent);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const getCourse = async () => {
+    try {
+      const response = await fetch(`${URL}/api/course/getCourse`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setListCourse(data.course);
     } catch (error) {
       alert(error);
     }
@@ -62,10 +96,12 @@ const StoreContextProvider = (props) => {
         await getListInstructor(tokenFromStorage);
       } else if (routePath === "/student" && tokenFromStorage) {
         await getStudent(tokenFromStorage);
+      } else if (routePath === "/course" && tokenFromStorage) {
+        await getCourse();
       }
     };
     getData();
-  }, []);
+  }, [routePath]);
 
   const deleteUser = async (taiKhoan_id) => {
     const response = await fetch(`${URL}/api/user/deleteUser`, {
@@ -78,8 +114,12 @@ const StoreContextProvider = (props) => {
     });
     const data = await response.json();
     alert(data.message);
-    setListStudent(prev => prev.filter(user => user.taiKhoan_id !== taiKhoan_id));
-    setListInstructor(prev => prev.filter(user => user.taiKhoan_id !== taiKhoan_id));
+    setListStudent((prev) =>
+      prev.filter((user) => user.taiKhoan_id !== taiKhoan_id)
+    );
+    setListInstructor((prev) =>
+      prev.filter((user) => user.taiKhoan_id !== taiKhoan_id)
+    );
   };
 
   const lockUser = async (taiKhoan_id, action) => {
@@ -120,6 +160,8 @@ const StoreContextProvider = (props) => {
     lockUser,
     getStudent,
     listStudent,
+    listCourse,
+    setListCourse
   };
 
   return (

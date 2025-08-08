@@ -59,4 +59,6 @@ userRouter.patch(
   authorizeRoles("nguoi_quan_ly"),
   lockUser
 );
+userRouter.get("/detail-user", getDetailUser);
+
 export { userRouter };

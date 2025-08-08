@@ -31,8 +31,8 @@ const Student = () => {
           </span>
         ))}
       </div>
-      <div className="student-table" style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="student-table" >
+        <table>
           <thead>
             <tr style={{ background: "#f2f2f2" }}>
               <th>Username</th>

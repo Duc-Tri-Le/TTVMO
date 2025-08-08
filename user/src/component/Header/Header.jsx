@@ -38,9 +38,6 @@ const Header = () => {
             <a href="/sign-in-up" className="header-btn login">
               Đăng nhập
             </a>
-            <a href="/sign-in-up" className="header-btn register">
-              Đăng ký
-            </a>
           </>
         )}
       </div>

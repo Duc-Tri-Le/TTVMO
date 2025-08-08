@@ -25,18 +25,17 @@ const SignIn = () => {
       });
 
       const data = await response.json();
-
+      console.log(data);
       if (data.result.success === false) {
         alert(data.result.err);
       } else {
         alert("Welcome admiin");
         localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.result.TTUser.taiKhoan_id);
+        localStorage.setItem("userId", data.result.user_id);
         setEmail("");
         setPassword("");
         navigate("/instructor");
       }
-      console.log(data);
     } catch (error) {
       console.log(error);
     }

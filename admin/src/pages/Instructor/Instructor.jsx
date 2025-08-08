@@ -45,8 +45,8 @@ const Instructor = () => {
           </span>
         ))}
       </div>
-      <div className="instructor-table" style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="instructor-table" >
+        <table s>
           <thead>
             <tr style={{ background: "#f2f2f2" }}>
               <th>Username</th>

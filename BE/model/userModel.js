@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const createToken = async (role, taiKhoan_id) => {
   const token = jwt.sign({ taiKhoan_id, role }, process.env.JWT_SECRET_KEY, {
-    expiresIn: "2h",
+    expiresIn: "1d",
   });
   return token;
 };
@@ -109,12 +109,12 @@ const registerUSerModel = async (username, password, email, role, SDT) => {
 const loginAdminModel = async (username, password, email) => {
   const selectAdmin = `select matKhau, vaiTro_id, taiKhoan_id from taikhoan where tenDangNhap = ? and email = ?`;
   const [adminIf] = await pool.execute(selectAdmin, [username, email]);
-
-  const { taiKhoan_id, matKhau } = adminIf[0];
-
+  console.log(adminIf);
   if (adminIf.length === 0 || adminIf[0]?.vaiTro_id !== 2) {
     return { result: { success: false, err: "sai tai khoan" } };
   }
+  const { taiKhoan_id, matKhau } = adminIf[0];
+
   const isPassword = await bcrypt.compare(password, matKhau);
   if (!isPassword) return { result: { err: "mat khau sai", success: false } };
 
@@ -124,31 +124,33 @@ const loginAdminModel = async (username, password, email) => {
     result: {
       success: true,
       message: "dang nhap thanh cong",
-      TTUser: { username, email, taiKhoan_id },
+      username,
+      email,
+      user_id: taiKhoan_id,
     },
     token,
   };
 };
 
 const acceptInstructorModel = async (taiKhoan_id, action) => {
-  let result = {}
+  let result = {};
   if (action === "accept") {
     const update = `update taikhoan set vaiTro_id = 3, status = "accepted" where taiKhoan_id = ?`;
     await pool.execute(update, [taiKhoan_id]);
     result = {
       success: true,
       message: "da phe duyet tai khoan lam giang vien",
-    }
-  }else {
+    };
+  } else {
     const update = `update taikhoan set status = "", vaiTro_id = 1 where taiKhoan_id = ?`;
     await pool.execute(update, [taiKhoan_id]);
     result = {
-      success : false,
-      message : "ko phe duyet lam giang vien"
-    }
+      success: false,
+      message: "ko phe duyet lam giang vien",
+    };
   }
   return {
-    result
+    result,
   };
 };
 
@@ -157,11 +159,10 @@ const getStudentModel = async () => {
   const [rows] = await pool.execute(getUser);
   const result = rows.map(({ matKhau, ...rest }) => rest);
   return {
-    result :
-    {
-      message : "danh sach hoc vien",
-      listStudent : result
-    }
+    result: {
+      message: "danh sach hoc vien",
+      listStudent: result,
+    },
   };
 };
 
@@ -182,6 +183,7 @@ const getInstructorModel = async () => {
 const getDetailUserModel = async (taiKhoan_id) => {
   const getDetail = `select * from taikhoan where taiKhoan_id = ?`;
   const [rows] = await pool.execute(getDetail, [taiKhoan_id]);
+
   return {
     result: {
       success: true,
@@ -231,31 +233,31 @@ const deleteUserModel = async (taiKhoan_id) => {
   const deleteUser = `delete from taikhoan where taiKhoan_id = ?`;
   await pool.execute(deleteUser, [taiKhoan_id]);
   return {
-    result : {
-      message : "da xoa tai khoan"
-    }
-  }
+    result: {
+      message: "da xoa tai khoan",
+    },
+  };
 };
 
 const lockUserModel = async (taiKhoan_id, action) => {
   let status = "";
   let result = {};
-  if(action === "lock"){
+  if (action === "lock") {
     status = "locked";
     result = {
-      message : "da khoa tai khoan"
-    }
-  }else{
+      message: "da khoa tai khoan",
+    };
+  } else {
     result = {
-      message : "da mo khoa tai khoan"
-    }
+      message: "da mo khoa tai khoan",
+    };
   }
   const lockUser = `update taikhoan set status = ? where taiKhoan_id = ?`;
   await pool.execute(lockUser, [status, taiKhoan_id]);
   return {
-    result
-  }
-}
+    result,
+  };
+};
 
 export {
   loginUserModel,
@@ -267,5 +269,5 @@ export {
   updateUSerModel,
   getInstructorModel,
   deleteUserModel,
-  lockUserModel
+  lockUserModel,
 };

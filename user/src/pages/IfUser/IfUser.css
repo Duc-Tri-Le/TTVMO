@@ -1,0 +1,54 @@
+.ifUser-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px 30px;
+    width: 100%;
+    max-width: 700px;
+    /* Giới hạn chiều rộng */
+    margin: 0;
+    /* Sát trái */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-family: Arial, sans-serif;
+}
+
+.ifUser-container h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: 600;
+}
+
+.ifUser-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ifUser-container li {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.ifUser-container li:last-child {
+    border-bottom: none;
+}
+
+.ifUser-container strong {
+    width: 180px;
+    /* Chiều rộng cột tiêu đề */
+    color: #555;
+    font-weight: 500;
+}
+
+.ifUser-container span {
+    flex: 1;
+    color: #222;
+}
+
+.loading {
+    padding: 20px;
+    color: #777;
+    font-style: italic;
+}

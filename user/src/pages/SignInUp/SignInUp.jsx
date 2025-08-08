@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { StoreContext } from "../../../context/storeContext.jsx";
+import { StoreContext } from "../../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const SignInUp = () => {
@@ -34,11 +34,12 @@ const SignInUp = () => {
       });
 
       const data = await response.json();
-
+      console.log(data);
       if (data?.result.success === false) {
         alert(data?.result.error);
       } else {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.result.user_id)
         navigate("/home");
         alert(`${isLogin ? "Đăng nhập" : "Đăng ký"} thành công!`);
       }

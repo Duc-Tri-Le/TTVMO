@@ -71,7 +71,7 @@ const getInstructor = async (req, res) => {
 
 const getDetailUser = async (req, res) => {
   try {
-    const { taiKhoan_id } = req.body;
+    const { taiKhoan_id } = req.query;
     const { result } = await getDetailUserModel(taiKhoan_id);
     return res.json(result);
   } catch (error) {
