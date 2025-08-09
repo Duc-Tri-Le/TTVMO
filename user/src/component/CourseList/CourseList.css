@@ -1,0 +1,64 @@
+.course-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    background-color: #f9f9f9;
+}
+
+.course-list-iem {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+    width: 280px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.course-list-iem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgb(0 0 0 / 0.15);
+}
+
+.course-list-image {
+    width: 100%;
+    height: 160px;
+    background-color: #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #888;
+    /* Nếu course.hinhanh là URL ảnh, dùng: */
+    /* background-image: url('...'); background-size: cover; background-position: center; */
+}
+
+.course-name {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.course-price {
+    color: #2e7d32;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.course-list-time {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.course-list-instructor {
+    font-size: 14px;
+    color: #555;
+}

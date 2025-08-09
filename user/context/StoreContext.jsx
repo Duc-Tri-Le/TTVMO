@@ -42,6 +42,17 @@ const StoreContextProvider = (props) => {
     }
   };
 
+  useEffect(() => {
+    const handlePopState = () => {
+      window.location.reload()
+    };
+    window.addEventListener('popstate', handlePopState);
+  
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    }
+  }, []);  
+
   const getDetailUser = async (userId) => {
     try {
       const detailUser = await fetch(
