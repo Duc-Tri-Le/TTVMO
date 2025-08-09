@@ -1,0 +1,67 @@
+.instructor-course-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    font-family: sans-serif;
+}
+
+/* Filter select buttons */
+.course-select {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.course-select span {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.course-select span:hover {
+    background: #eee;
+}
+
+.course-select span.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* Table wrapper for scroll */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+/* Table styles */
+.table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table-wrapper th {
+    background: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    vertical-align: top;
+}
+
+.table-wrapper tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.table-wrapper tr:hover {
+    background: #f1f7ff;
+}

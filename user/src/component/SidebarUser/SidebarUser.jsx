@@ -12,11 +12,12 @@ const SidebarUser = () => {
       </a>
     );
   };
+  const role = localStorage.getItem("role");
 
   const SidebarLink = [
     { to: "/account/profile", imgSrc: "", text: "Thông tin người dùng" },
-    { to: "/user-course", imgSrc: "", text: "Khoá học đã tham gia" },
-    { to: "/course", imgSrc: "", text: "Course" },
+    { to: "/user/course", imgSrc: "", text: "Khoá học đã tham gia" },
+    ...(role === "giang_vien" ? [{ to: "/instructor/course", imgSrc:"", text : "Khoá học của giảng viên" }] : []),
   ];
 
   return (

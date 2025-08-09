@@ -132,7 +132,7 @@ const getCourseModel = async () => {
   };
 };
 
-const updateCourseModel = async (list_gv_id, khoaHoc_id, ifCourse) => {
+const updateCourseModel = async ( khoaHoc_id, ifCourse) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -187,6 +187,13 @@ const getUSerCourseModel = async (user_id) => {
   }
 }
 
+const getInstructorCourseModel = async(gv_id) => {
+  const sql = `select * from khoahoc where gv_tao = ?`;
+  const [rows] = await pool.execute(sql, [gv_id]);
+  return rows
+}
+
+
 const getLevelEducationModel = async () => {
   const sql = `select * from caphoc`
   const [rows] = await pool.execute(sql);
@@ -215,5 +222,6 @@ export {
   getLevelEducationModel,
   getProgramModel,
   getSubjectModel,
-  acceptCourseModel
+  acceptCourseModel,
+  getInstructorCourseModel
 };

@@ -36,10 +36,11 @@ const SignInUp = () => {
       const data = await response.json();
       console.log(data);
       if (data?.result.success === false) {
-        alert(data?.result.error);
+        alert(data?.result.err);
       } else {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.result.user_id)
+        localStorage.setItem("userId", data.result.user_id);
+        localStorage.setItem("role", data.result.role)
         navigate("/home");
         alert(`${isLogin ? "Đăng nhập" : "Đăng ký"} thành công!`);
       }

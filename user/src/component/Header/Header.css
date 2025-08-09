@@ -53,10 +53,64 @@
     background-color: #0056b3;
 }
 
-/* Welcome text */
+.header-welcome-menu {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
 .header-welcome {
+    font-size: 18px;
+    font-weight: bold;
     color: #333;
-    font-weight: 500;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    /* đặt ngay dưới phần header-welcome */
+    left: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    padding: 4px 0;
+    margin: 0;
+    z-index: 999;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.dropdown-item {
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.dropdown-item a {
+    display: block;
+    /* chiếm toàn bộ chiều rộng item */
+    padding: 8px 12px;
+    color: inherit;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover a {
+    background: #f2f2f2;
+    border-radius: 4px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Custom styles for logout */

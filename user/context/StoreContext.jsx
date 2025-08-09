@@ -9,19 +9,34 @@ const StoreContextProvider = (props) => {
   const [listCourse, setListCourse] = useState([]);
   const [ifUser, setIfUser] = useState([]);
   const [userCourse, setUserCourse] = useState([]);
+  const [instructorCourse, setInstructorCourse] = useState([]);
+ 
   const pathRoute = window.location.pathname;
 
-  const getCourses = async () => {
+  const searchParams = new URLSearchParams(location.search);
+  const capHoc_id = searchParams.get("capHoc_id");
+  const CTH_id = searchParams.get("CTH_id");
+  const LKH_id = searchParams.get("LKH_id");
+
+  const getCourses = async (capHoc_id, CTH_id, LKH_id) => {
     try {
-      const courses = await fetch(`${URL}/api/course/getCourse`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const params = new URLSearchParams();
+      if (capHoc_id) params.append("capHoc_id", capHoc_id);
+      if (CTH_id) params.append("CTH_id", CTH_id);
+      if (LKH_id) params.append("LKH_id", LKH_id);
+
+      const courses = await fetch(
+        `${URL}/api/course/getCourse?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const course = await courses.json();
-      console.log(course);
-      setListCourse(course);
+  
+      setListCourse(course.course);
     } catch (error) {
       console.log(error);
     }
@@ -29,47 +44,74 @@ const StoreContextProvider = (props) => {
 
   const getDetailUser = async (userId) => {
     try {
-        const detailUser = await fetch(`${URL}/api/user/detail-user?taiKhoan_id=${userId}`, {
-            method : "GET",
-            headers : {
-                "Content-Type" : "application/json"
-            }
-        })
+      const detailUser = await fetch(
+        `${URL}/api/user/detail-user?taiKhoan_id=${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-        const data = await detailUser.json();
-        setIfUser(data)
+      const data = await detailUser.json();
+      setIfUser(data);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-  }
+  };
 
   const getUSerCourse = async (userId) => {
     try {
-        const userCourse = await fetch(`${URL}/api/course/userCourse?user_id=${userId}`, {
-            method : "GET",
-            headers : {
-                "Content-Type" : "application/json"
-            }
-        })
-        const data = await userCourse.json();
-        setUserCourse(data)
+      const userCourse = await fetch(
+        `${URL}/api/course/userCourse?user_id=${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await userCourse.json();
+      setUserCourse(data);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-  }
+  };
+
+  const InstructorCourse = async (userId, tokenFromStorage) => {
+    try {
+      const instructorCourse = await fetch(
+        `${URL}/api/course/getInstructorCourse?gv_id=${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: tokenFromStorage,
+          },
+        }
+      );
+      const data = await instructorCourse.json();
+      setInstructorCourse(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
       const tokenFromStorage = localStorage.getItem("token");
       const userIdFromStorage = localStorage.getItem("userId");
       setToken(tokenFromStorage);
-      setUserId(userIdFromStorage)
+      setUserId(userIdFromStorage);
       if (pathRoute === "/home") {
-        await getCourses();
-      }else if(pathRoute === "/account/profile"){
-        await getDetailUser(userIdFromStorage)
-      }else if(pathRoute === "/user-course"){
+        await getCourses(capHoc_id, CTH_id, LKH_id);
+      } else if (pathRoute === "/account/profile") {
+        await getDetailUser(userIdFromStorage);
+      } else if (pathRoute === "/user-course") {
         await getUSerCourse(userIdFromStorage);
+      } else if (pathRoute === "/instructor/course") {
+        await InstructorCourse(userIdFromStorage, tokenFromStorage);
       }
     };
     loadData();
@@ -81,7 +123,9 @@ const StoreContextProvider = (props) => {
     token,
     userId,
     ifUser,
-    userCourse
+    userCourse,
+    instructorCourse,
+    getCourses
   };
 
   return (

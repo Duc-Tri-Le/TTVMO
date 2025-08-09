@@ -1,0 +1,70 @@
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    /* màu đen mờ */
+    z-index: 5;
+}
+
+.sidebar-container {
+    display: flex;
+    background: white;
+    border: 1px solid #e5e5e5;
+    width: fit-content;
+    font-family: Arial, sans-serif;
+    position: relative;
+    z-index:  6;
+}
+
+/* Cột cấp học */
+.sidebar-level-education {
+    padding: 10px 15px;
+    cursor: pointer;
+    background: white;
+    border-right: 1px solid #e5e5e5;
+    min-width: 200px;
+    transition: background 0.2s;
+}
+
+.sidebar-level-education:hover {
+    background: #e6f0fa;
+    color: #0066cc;
+
+}
+
+/* Cột chương trình */
+.sidebar-program {
+    padding: 10px 15px;
+    cursor: pointer;
+    background: white;
+    border-right: 1px solid #e5e5e5;
+    min-width: 200px;
+    transition: background 0.2s;
+}
+
+.sidebar-program:hover {
+    background: #e6f0fa;
+    color: #0066cc;
+}
+
+/* Cột môn học */
+.sidebar-subject {
+    padding: 10px 15px;
+    cursor: pointer;
+    background: white;
+    min-width: 200px;
+    transition: background 0.2s;
+}
+
+.sidebar-subject:hover {
+    background: #f9f9f9;
+}
+
+/* Bố trí 3 cột ngang */
+.sidebar-column {
+    background: white;
+    color: #0066cc;
+}

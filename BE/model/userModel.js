@@ -40,6 +40,7 @@ const loginUserModel = async (password, email) => {
         email,
         success: true,
         user_id: userIf[0].taiKhoan_id,
+        role : tenVaiTro[0].tenVaiTro,
       },
       token,
     };

@@ -4,6 +4,7 @@ import {
   addCourse,
   deleteCourse,
   getCourse,
+  getInstructorCourse,
   getLevelEducation,
   getProgram,
   getSubject,
@@ -15,35 +16,48 @@ import { upload } from "../config/uploadConfig.js";
 import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 
 const courseRouter = express.Router();
-//giang vien
+//nguoi_quan_ly
 courseRouter.put(
   "/addCourse",
   authMiddleware,
-  authorizeRoles("giang_vien"),
+  authorizeRoles("nguoi_quan_ly"),
   upload.single("image"),
   addCourse
 );
 courseRouter.patch(
   "/hideCourse",
   authMiddleware,
-  authorizeRoles("giang_vien"),
+  authorizeRoles("nguoi_quan_ly"),
   hideCourse
 );
 courseRouter.patch(
   "/updateCourse",
   authMiddleware,
-  authorizeRoles("giang_vien"),
+  authorizeRoles("nguoi_quan_ly"),
   upload.single("image"),
   updateCourse
 );
 courseRouter.delete(
   "/deleteCourse",
   authMiddleware,
-  authorizeRoles("giang_vien"),
+  authorizeRoles("nguoi_quan_ly"),
   deleteCourse
 );
-//nguoi qua ly
-courseRouter.patch("/acceptCourse",authMiddleware, authorizeRoles("nguoi_quan_ly"), acceptCourse);
+courseRouter.patch(
+  "/acceptCourse",
+  authMiddleware,
+  authorizeRoles("nguoi_quan_ly"),
+  acceptCourse
+);
+
+//nguoi quan ly,giang vien
+courseRouter.get(
+  "/getInstructorCourse",
+  authMiddleware,
+  authorizeRoles("nguoi_quan_ly","giang_vien"),
+  getInstructorCourse
+);
+
 
 //all
 courseRouter.get("/getCourse", getCourse);
