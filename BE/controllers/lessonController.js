@@ -39,7 +39,8 @@ const deleteLesson = async (req,res) => {
 }
 
 const getLesson = async (req, res) => {
-  const {result} = await getLessonModel();
+  const {khoaHoc_id, user_id} =  req.query;
+  const {result} = await getLessonModel(khoaHoc_id, user_id);
   return res.json(result)
 }
 export { addLesson, deleteLesson, getLesson };

@@ -2,12 +2,13 @@ import { addReviewModel, deleteReviewModel, getReviewModel, updateReviewModel } 
 
 const addReview = async (req, res) => {
     let {ifReview} = req.body;
+    console.log(ifReview);
     const files = req.files;
     if(typeof ifReview === "string"){
         ifReview = JSON.parse(ifReview);
     }
     let ifImage = [];
-    files.map((file) => {      
+    files?.map((file) => {      
         ifImage.push(`/${file.filename}`)
     })
     // console.log('====================================');
@@ -20,6 +21,7 @@ const addReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
     const {ifReview} = req.body;
+    console.log(ifReview);
     const {review_id} = req.query;
     const {message} = await updateReviewModel(review_id, ifReview);
     return res.json(message);

@@ -68,8 +68,8 @@ const getListExerCise = async (req, res) => {
 
 const getDetailExercise = async (req, res) => {
   const { BKT_id } = req.query;
-  const { message, result, soCauHoi } = await getDetailExerciseModel(BKT_id);
-  return res.json({ message, result, soCauHoi });
+  const result = await getDetailExerciseModel(BKT_id);
+  return res.json(result);
 };
 
 const startExam = async (req, res) => {
@@ -91,14 +91,11 @@ const startExam = async (req, res) => {
 };
 
 const submitExam = async (req, res) => {
-  const { user_exam_id, list_question_id, list_content_answer, list_CTL_id } =
-    req.body;
-    console.log({ user_exam_id, list_question_id, list_content_answer, list_CTL_id });
+  const { user_exam_id, userAnswer } = req.body;
+  console.log({ user_exam_id, userAnswer });
   const { message, score, duration } = await submitExamModel(
     user_exam_id,
-    list_question_id,
-    list_content_answer,
-    list_CTL_id
+    userAnswer
   );
   return res.json({ message, score, duration });
 };

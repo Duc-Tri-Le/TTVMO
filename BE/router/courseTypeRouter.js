@@ -5,7 +5,7 @@ import { addCourseType, hideCourseType, deleteCourseType, getCourseType } from "
 const courseTypeRouter = express.Router();
 
 //nguoi quan ly
-courseTypeRouter.put("/addCourseType", authMiddleware, authorizeRoles("quan_ly"), addCourseType);
+courseTypeRouter.post("/addCourseType", authMiddleware, authorizeRoles("quan_ly"), addCourseType);
 courseTypeRouter.patch("/hideCourseType",  authMiddleware, authorizeRoles("quan_ly"), hideCourseType);
 courseTypeRouter.delete("/deleteCourseType",  authMiddleware, authorizeRoles("quan_ly"), deleteCourseType);
 courseTypeRouter.get("/getCourseType",  authMiddleware, authorizeRoles("quan_ly"), getCourseType);

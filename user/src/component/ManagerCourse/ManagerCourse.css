@@ -1,0 +1,56 @@
+.manager-course-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.add-exam {
+    background-color: #4cafef;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    width: fit-content;
+    transition: background-color 0.2s ease;
+    margin-bottom: 15px;
+}
+
+.add-exam:hover {
+    background-color: #3a9dd6;
+}
+
+.list-exam {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    background-color: #fafafa;
+    margin-bottom: 4px;
+    transition: background 0.2s ease;
+    flex-wrap: wrap;
+}
+
+.list-exam span {
+    font-weight: bold;
+    margin-right: 6px;
+}
+
+.list-exam:hover {
+    background-color: #f0f8ff;
+}
+
+.a-exam {
+    display: block; /* mỗi cặp span + giá trị nằm một dòng */
+    margin: 4px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.a-exam span {
+    font-weight: bold;
+    margin-right: 4px; /* khoảng cách giữa tiêu đề và giá trị */
+}

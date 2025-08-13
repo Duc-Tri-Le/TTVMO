@@ -5,7 +5,7 @@ import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 
 const documentRouter = express.Router();
 
-documentRouter.put("/addDocument",  authMiddleware, authorizeRoles("giang_vien"), upload.single("document"), addDocument);
+documentRouter.post("/addDocument",  authMiddleware, authorizeRoles("giang_vien"), upload.single("document"), addDocument);
 documentRouter.delete("/deleteDocument",  authMiddleware, authorizeRoles("giang_vien"), deleteDocument);
 
 export default documentRouter;

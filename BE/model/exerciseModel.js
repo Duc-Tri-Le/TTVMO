@@ -4,8 +4,9 @@ const addExerciseModel = async (ifExercise, ifQuestions) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
+    // console.log(ifExercise);
     const exercise_id = await insertExercise(connection, ifExercise);
-    console.log(exercise_id);
+    // console.log(exercise_id);
     await insertQuestion(connection, ifQuestions, exercise_id);
 
     await connection.commit();
@@ -80,30 +81,32 @@ const getListExerciseModel = async (khoaHoc_id) => {
 };
 
 const getDetailExerciseModel = async (BKT_id) => {
-  const getDetail = `SELECT 
-  ANY_VALUE(bkt.BKT_id) AS BKT_id, 
-  ANY_VALUE(bkt.tenBKT) AS tenBKT, 
-  ANY_VALUE(bkt.ngayTao) AS ngayTao,
-  ANY_VALUE(ch.cauHoi_id) AS cauHoi_id,
-  GROUP_CONCAT(CONCAT(ctl.noiDung, ' (', IF(ctl.dungSai = 1, 'Đúng', 'Sai'), ')') SEPARATOR ', ') AS dapAnGop,
-  GROUP_CONCAT( distinct (ch.tenCauHoi)  SEPARATOR ', ') AS cauHoiGop,
-  ANY_VALUE(kh.tenKhoaHoc) AS tenKhoaHoc,
-  ANY_VALUE(tk.tenDangNhap) AS tenDangNhap
-  FROM baikiemtra bkt
-  LEFT JOIN cauhoi ch ON ch.BKT_id = bkt.BKT_id
-  LEFT JOIN cautraloi ctl ON ctl.cauHoi_id = ch.cauhoi_id
-  LEFT JOIN khoahoc kh ON kh.khoaHoc_id = bkt.khoaHoc_id
-  LEFT JOIN taikhoan tk ON tk.taiKhoan_id = bkt.nguoiTao_id
-
-  where bkt.BKT_id = ?
-  GROUP BY ch.cauHoi_id;
-  `;
-  const [detailExercise] = await pool.execute(getDetail, [BKT_id]);
-  return {
-    message: "chi tiet bai kiem tra",
-    result: detailExercise,
-    number_question: detailExercise.length,
-  };
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    const sql = `
+    SELECT 
+    ch.cauHoi_id,
+    ANY_VALUE(ch.tenCauHoi) AS tenCauHoi,
+    ANY_VALUE(ch.answer_id_correct) AS answer_id_correct,
+    GROUP_CONCAT(ctl.CTL_id) AS answer_id,
+    GROUP_CONCAT(ctl.noiDung) AS answer_content
+    FROM cauhoi ch
+    JOIN cautraloi ctl 
+        ON ch.cauHoi_id = ctl.cauHoi_id
+    WHERE ch.BKT_id = ?
+    GROUP BY ch.cauHoi_id;
+    `;
+    const [result] = await connection.execute(sql, [BKT_id]);
+   
+    connection.commit()
+    return result;
+  } catch (error) {
+    console.log(error);
+    await connection.rollback();
+  }finally{
+    connection.release()
+  }
 };
 
 const insertExercise = async (connection, ifExercise) => {
@@ -136,42 +139,56 @@ const insertQuestion = async (connection, ifQuestions, exercise_id) => {
   const insertQuestion = `insert into cauhoi(BKT_id, tenCauHoi) values (?, ?)`;
 
   for (const question of ifQuestions) {
-    console.log("question : ", question);
+    // console.log("question : ", question);
     const [result] = await connection.execute(insertQuestion, [
       exercise_id,
       question.tenCauHoi,
     ]);
     const question_id = result.insertId;
+    // console.log(question_id);
     if (question.ifAnswers) {
-      await insertAnswer(connection, question.ifAnswers, question_id);
+      await insertAnswer(
+        connection,
+        question.ifAnswers,
+        question_id,
+        question.correctAnswerIndex
+      );
     }
   }
 };
 
-const insertAnswer = async (connection, ifAnswers, question_id) => {
-  const insertAnswer = `insert into cautraloi(cauHoi_id, noiDung, dungSai) values(?,?,?)`;
-  for (const answer of ifAnswers) {
-    console.log("answer :", answer);
-    await connection.execute(insertAnswer, [
+const insertAnswer = async (
+  connection,
+  ifAnswers,
+  question_id,
+  correctAnswerIndex
+) => {
+  const insertAnswer = `insert into cautraloi(cauHoi_id, noiDung) values(?,?)`;
+  // console.log(ifAnswers);
+  for (let i = 0; i < ifAnswers.length; i++) {
+    const [answer] = await connection.execute(insertAnswer, [
       question_id,
-      answer.noiDung,
-      answer.dungSai,
+      ifAnswers[i],
     ]);
+    const answer_id = answer.insertId;
+    // console.log(answer_id);
+    if (i === correctAnswerIndex) {
+      const sql = `update cauhoi set answer_id_correct = ? where cauHoi_id = ?`;
+      await connection.execute(sql, [answer_id, question_id]);
+    }
   }
 };
 
 const startExamModel = async (
   user_id,
   exam_id,
-  number_question,
-  time_limit
+
 ) => {
-  const insertUserExam = `insert into userExam(user_id, exam_id, number_question, time_limit) values(?,?,?,?)`;
+  const insertUserExam = `insert into userExam(user_id, exam_id) values(?,?)`;
   const [exam] = await pool.execute(insertUserExam, [
     user_id,
     exam_id,
-    number_question,
-    time_limit,
+
   ]);
   return { message: "bat dau lam bai", user_exam_id: exam.insertId };
 };
@@ -179,38 +196,22 @@ const startExamModel = async (
 const selectAnswerModel = async (
   connection,
   user_exam_id,
-  list_question_id,
-  list_content_answer,
-  list_CTL_id
+  userAnswer
 ) => {
   try {
-    const get_is_correct = `select dungSai from cautraloi where CTL_id in (?)`;
-    const [result] = await connection.query(get_is_correct, [list_CTL_id]);
-    // console.log(result);
-    const user_exam = result.map((is_correct, index) => {
-      return [
-        user_exam_id,
-        list_question_id[index],
-        list_content_answer[index],
-        is_correct.dungSai,
-        list_CTL_id[index],
-      ];
-    });
-
-    // consol
-    const insertUserAnswer = `insert into userAnswer(user_exam_id, question_id, content_answer, is_correct, answer_id) values ?`;
-    await connection.query(insertUserAnswer, [user_exam]);
-
+    for(const key in userAnswer){
+      
+    }
+    const sql = `insert into userAnswer(answer_id, question_id, user_exam_id) value (?,?,?)`
+    await connection.query();
   } catch (error) {
-    throw error
+    throw error;
   }
 };
 
 const submitExamModel = async (
   user_exam_id,
-  list_question_id,
-  list_content_answer,
-  list_CTL_id
+    userAnswer
 ) => {
   const connection = await pool.getConnection();
   try {
@@ -219,9 +220,7 @@ const submitExamModel = async (
     await selectAnswerModel(
       connection,
       user_exam_id,
-      list_question_id,
-      list_content_answer,
-      list_CTL_id
+      userAnswer
     );
 
     const selectAllCorrect = `select 
@@ -233,7 +232,9 @@ const submitExamModel = async (
 
     group by user_exam_id`;
 
-    const [allCorrect] = await connection.execute(selectAllCorrect, [user_exam_id]);
+    const [allCorrect] = await connection.execute(selectAllCorrect, [
+      user_exam_id,
+    ]);
     const number_correct = allCorrect[0].number_correct;
     // console.log('====================================');
     // console.log(number_correct);
@@ -265,7 +266,7 @@ const submitExamModel = async (
     const insertUserExam = `update userExam set score = ?, duration = ? where user_exam_id = ?`;
     await connection.execute(insertUserExam, [score, duration, user_exam_id]);
 
-    await connection.commit()
+    await connection.commit();
     return {
       message: "hoan thanh bai thi",
       score,

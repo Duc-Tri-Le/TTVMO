@@ -1,15 +1,12 @@
 import React from "react";
-import ManagerUser from "../ManagerUser/ManagerUser";
+import CourseList from "../../component/CourseList/CourseList";
+import ManagerUer from "../../pages/ManagerUser/ManagerUser";
 
 const UserCourse = () => {
   return (
-    <>
-      <ManagerUser>
-        <div className="user-course-container">
-            
-        </div>
-      </ManagerUser>
-    </>
+    <ManagerUer>
+      <CourseList />
+    </ManagerUer>
   );
 };
 

@@ -5,7 +5,7 @@ import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 
 const lessonRouter = express.Router();
 
-lessonRouter.put(
+lessonRouter.post(
   "/addLesson",
   authMiddleware,
   authorizeRoles("giang_vien"),

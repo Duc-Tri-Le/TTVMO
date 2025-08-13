@@ -17,7 +17,7 @@ import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 
 const courseRouter = express.Router();
 //nguoi_quan_ly
-courseRouter.put(
+courseRouter.post(
   "/addCourse",
   authMiddleware,
   authorizeRoles("nguoi_quan_ly"),

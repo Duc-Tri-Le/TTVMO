@@ -64,7 +64,7 @@ const InstructorCourse = () => {
                   </td>
                   <td>{course?.mota}</td>
                   <td>{course?.soHVTD || "_"}</td>
-                  <td>{course.soSVHT}</td>
+                  <td>{course.HVHT}</td>
                   <td>{new Date(course.ngayTao).toLocaleString("vi-VN")}</td>
                 </tr>
               ))}

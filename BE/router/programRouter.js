@@ -5,7 +5,7 @@ import { authMiddleware, authorizeRoles } from "../middleware/author.js";
 const programRouter = express.Router();
 
 //nguoi quan ly
-programRouter.put("/addProgram",  authMiddleware, authorizeRoles("quan_ly"), addProgram);
+programRouter.post("/addProgram",  authMiddleware, authorizeRoles("quan_ly"), addProgram);
 programRouter.patch("/hideProgram",  authMiddleware, authorizeRoles("quan_ly"), hidePRogram);
 programRouter.delete("/deleteProgram",  authMiddleware, authorizeRoles("quan_ly"), deleteProgram);
 programRouter.get("/getProgram",  authMiddleware, authorizeRoles("quan_ly"), getProgram);

@@ -4,13 +4,6 @@
     background-color: #f6f6f6;
 }
 
-/* Header */
-.header-home {
-    background-color: #ffffff;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
-}
-
 /* Banner + Sidebar layout */
 .banner-sidebar-home {
     display: flex;
@@ -46,13 +39,4 @@
     margin: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-/* Footer */
-.footer-home {
-    background-color: #20232a;
-    color: #ffffff;
-    text-align: center;
-    padding: 30px 20px;
-    margin-top: 20px;
 }

@@ -1,0 +1,58 @@
+.exam-container {
+    width: 100%;
+    /* chiếm hết chiều ngang */
+    min-height: 100vh;
+    /* ít nhất bằng chiều cao màn hình */
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.exam-container>p:first-child {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+    text-align: center;
+    /* cho tiêu đề ra giữa */
+}
+
+
+.exam-ifQuestion {
+    margin-top: 20px;
+}
+
+.question-block {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e6e6e6;
+    border-radius: 6px;
+    background-color: #fafafa;
+}
+
+.question-block p {
+    margin: 0 0 10px;
+    font-size: 16px;
+}
+
+.answers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.answers label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.answers input[type="radio"] {
+    accent-color: #4cafef;
+    /* Màu radio button */
+}

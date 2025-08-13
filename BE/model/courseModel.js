@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import { __filename, __dirname } from "../uploads/url.js";
 
-const addCourseModel = async ( ifCourse) => {
+const addCourseModel = async (ifCourse) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -28,7 +28,6 @@ const addCourseModel = async ( ifCourse) => {
     }
     const khoaHoc_id = course.insertId;
 
-
     connection.commit();
     return {
       message: "them khoa hoc thanh cong",
@@ -47,9 +46,9 @@ const acceptCourseModel = async (khoaHoc_id) => {
   const acceptCourse = `update khoahoc set trangThai = 'chap_nhan' where khoaHoc_id = ?`;
   await pool.execute(acceptCourse, [khoaHoc_id]);
   return {
-    message : "chap nhan khoa hoc thanh cong"
-  } 
-}
+    message: "chap nhan khoa hoc thanh cong",
+  };
+};
 
 const hideCourseModel = async (khoaHoc_id) => {
   const hideCourse = `update khoahoc set is_active = 0 where khoaHoc_id = ?`;
@@ -110,7 +109,8 @@ const getCourseModel = async () => {
     any_value(ch.tenCapHoc) as tenCapHoc,
     any_value(ch.capHoc_id) as capHoc_id,
     any_value(soHVHT.soSVHT) as soSVHT,
-    group_concat(distinct tk.tenNguoiDung order by tk.tenNguoiDung asc) as giang_vien
+    group_concat(distinct tk.tenNguoiDung order by tk.tenNguoiDung asc) as giang_vien,
+    group_concat(dkkh.user_id) AS danh_sach_hoc_vien
 
   from khoahoc kh
   left join loaikhoahoc lhk on lhk.LKH_id = kh.LKH_id
@@ -118,6 +118,7 @@ const getCourseModel = async () => {
   left join caphoc ch on ch.capHoc_id = cth.capHoc_id
   left join sohvht on sohvht.khoaHoc_id = kh.khoaHoc_id
   left join taikhoan tk on tk.taiKhoan_id = kh.gv_tao
+  left join dangkikhoahoc dkkh on dkkh.course_id = kh.khoaHoc_id
   
   group by kh.khoaHoc_id
   order by ngayTao desc;
@@ -132,7 +133,7 @@ const getCourseModel = async () => {
   };
 };
 
-const updateCourseModel = async ( khoaHoc_id, ifCourse) => {
+const updateCourseModel = async (khoaHoc_id, ifCourse) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -172,45 +173,68 @@ const updateCourseModel = async ( khoaHoc_id, ifCourse) => {
 
 const getUSerCourseModel = async (user_id) => {
   const sql = `select 
-  kh.tenKhoaHoc, kh.khoaHoc_id, kh.ngayBatDau, kh.ngayKetThuc, kh.moTa, kh.soHVTD, kh.khoaHoc_id,
-  sohvht.soSVHT
+      ANY_VALUE(kh.tenKhoaHoc) as tenKhoaHoc,
+      kh.khoaHoc_id, 
+      ANY_VALUE(kh.ngayBatDau) as ngayBatDau,
+      ANY_VALUE(kh.ngayKetThuc) as ngayKetThuc, 
+      ANY_VALUE(kh.moTa) as moTa, 
+      ANY_VALUE(kh.soHVTD) as soHVTD,
+      group_concat(dkkh.user_id) AS danh_sach_hoc_vien,
+      count(dkkh.user_id) as  HVHT,
+      any_value(kh.giaca) as giaca,
+      any_value(tk.tenDangNhap) as giang_vien,
+      any_value(tk.taiKhoan_id) as gv_id
 
-  from khoahoc kh
-  join CourseRegistration cr on cr.course_id = kh.khoaHoc_id
-  left join sohvht on sohvht.khoaHoc_id = kh.khoaHoc_id
+    from khoahoc kh
+    join dangkikhoahoc dkkh on dkkh.course_id = kh.khoaHoc_id
+    join taikhoan tk on tk.taiKhoan_id = kh.gv_tao
 
-  where cr.user_id = ?
-  `
+    where dkkh.user_id = ?
+    GROUP BY kh.khoaHoc_id;
+  `;
   const [rows] = await pool.execute(sql, [user_id]);
   return {
-    result : rows
-  }
-}
+    result: rows,
+  };
+};
 
-const getInstructorCourseModel = async(gv_id) => {
-  const sql = `select * from khoahoc where gv_tao = ?`;
+const getInstructorCourseModel = async (gv_id) => {
+  const sql = `select ANY_VALUE(kh.tenKhoaHoc) as tenKhoaHoc,
+  kh.khoaHoc_id, 
+  ANY_Value(kh.hanDangKy) as hanDangKy,
+  ANY_Value(kh.ngayTao) as ngayTao,
+  ANY_VALUE(kh.ngayBatDau) as ngayBatDau,
+  ANY_VALUE(kh.ngayKetThuc) as ngayKetThuc, 
+  ANY_VALUE(kh.moTa) as moTa, 
+  ANY_VALUE(kh.soHVTD) as soHVTD,
+  group_concat(dkkh.user_id) AS danh_sach_hoc_vien,
+  count(dkkh.user_id) as  HVHT
+  from khoahoc kh
+  left join dangkikhoahoc dkkh on dkkh.course_id = kh.khoaHoc_id
+  
+    where gv_tao = ?
+    group by kh.khoaHoc_id`;
   const [rows] = await pool.execute(sql, [gv_id]);
-  return rows
-}
-
+  return rows;
+};
 
 const getLevelEducationModel = async () => {
-  const sql = `select * from caphoc`
+  const sql = `select * from caphoc`;
   const [rows] = await pool.execute(sql);
   return rows;
-}
+};
 
 const getProgramModel = async (capHoc_id) => {
   const sql = `select * from chuongtrinhhoc where capHoc_id = ?`;
-  const [rows] = await pool.execute(sql,[capHoc_id]);
+  const [rows] = await pool.execute(sql, [capHoc_id]);
   return rows;
-}
+};
 
 const getSubjectModel = async (CTH_id) => {
   const sql = `select * from loaikhoahoc where CTH_id = ?`;
   const [rows] = await pool.execute(sql, [CTH_id]);
-  return rows
-}
+  return rows;
+};
 
 export {
   addCourseModel,
@@ -223,5 +247,5 @@ export {
   getProgramModel,
   getSubjectModel,
   acceptCourseModel,
-  getInstructorCourseModel
+  getInstructorCourseModel,
 };

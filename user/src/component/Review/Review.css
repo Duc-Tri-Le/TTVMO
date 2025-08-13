@@ -1,0 +1,86 @@
+.review-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    max-width: 700px;
+}
+
+.review-container h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 20px;
+}
+
+.review-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.review-container label {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    color: #444;
+}
+
+.review-container select,
+.review-container textarea {
+    margin-top: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.review-container textarea {
+    resize: vertical;
+}
+
+.review-container button {
+    background-color: #4cafef;
+    color: white;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    align-self: flex-start;
+    transition: background 0.2s;
+}
+
+.review-container button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.review-container button:hover:not(:disabled) {
+    background-color: #3a9dd6;
+}
+
+.review-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.review-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.review-list strong {
+    color: #222;
+}
+
+.review-list p {
+    margin: 5px 0;
+    color: #444;
+}
+
+.review-list small {
+    color: #777;
+    font-size: 12px;
+}

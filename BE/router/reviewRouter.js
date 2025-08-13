@@ -4,7 +4,7 @@ import {upload} from "../config/uploadConfig.js";
 
 const reviewRouter = express.Router();
 
-reviewRouter.put("/addReview",upload.array("image",3), addReview);
+reviewRouter.post("/addReview",upload.array("image",3), addReview);
 reviewRouter.delete("/deleteReview", deleteReview);
 reviewRouter.patch("/updateReview", updateReview);
 reviewRouter.get("/getReview", getReview);

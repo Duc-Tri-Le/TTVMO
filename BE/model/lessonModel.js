@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 
 const addLessonModel = async (ifLesson, ifDocument) => {
+  KH_id;
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -45,7 +46,7 @@ const deleteLessonModel = async (BG_id) => {
     await connection.beginTransaction();
     const selectVideoURL = `select videoURl from baigiang where BG_id = ?`;
     const [videoURl] = await connection.execute(selectVideoURL, [BG_id]);
-    
+
     const filePath = path.join(__dirname, "video", videoURl[0].videoURl);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
@@ -73,23 +74,38 @@ const deleteLessonModel = async (BG_id) => {
   }
 };
 
-const getLessonModel = async () => {
-  const getLesson = `select bg.BG_id, bg.tenBG, bg.videoURL, bg.mota, bg.ngayTao as bg_ngay_tao,
-  tl.TL_id, tl.tenTL, tl.ngayTao as tl_ngay_tao , tl.loaiTL, tl.dinhDangTep, tl.duongdantep, tl.coDuocTaiVe
-  
-  from baigiang bg
-  left join tailieu tl on bg.BG_id = tl.BG_id
-
-  order by bg.ngayTao desc
-  `
-  const [result] = await pool.execute(getLesson);
-  console.log(result);
-  return {result}
-}
-
-const addDocument = async (connection, ifDocument, BG_id) => {
+const getLessonModel = async (khoaHoc_id, user_id) => {
+  const connection = await pool.getConnection();
   try {
-    ifDocument.BG_id = BG_id;
+    await connection.beginTransaction();
+    const getLesson = `SELECT 
+          bg.BG_id, 
+          ANY_VALUE(bg.tenBG) AS tenBG, 
+          ANY_VALUE(bg.videoURL) AS videoURL, 
+          ANY_VALUE(bg.mota) AS mota, 
+          ANY_VALUE(bg.ngayTao) AS bg_ngay_tao, 
+          ANY_VALUE(bg.mien_phi) AS mien_phi
+          
+          FROM baigiang bg
+          
+          WHERE bg.khoaHoc_id = ?
+          
+          ORDER BY bg_ngay_tao DESC;
+          `;
+    const [result] = await pool.execute(getLesson, [khoaHoc_id]);
+    await connection.commit();
+    return { result };
+  } catch (error) {
+    await connection.rollback();
+    console.log(error);
+  } finally {
+    connection.release();
+  }
+};
+
+const addDocument = async (connection, ifDocument, khoaHoc_id) => {
+  try {
+    ifDocument.khoaHoc_id = khoaHoc_id;
     const fields = [];
     const values = [];
     const dauGiaTri = [];

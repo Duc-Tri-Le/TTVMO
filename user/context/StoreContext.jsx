@@ -84,7 +84,7 @@ const StoreContextProvider = (props) => {
         }
       );
       const data = await userCourse.json();
-      setUserCourse(data);
+      setListCourse(data);
     } catch (error) {
       console.log(error);
     }
@@ -119,7 +119,7 @@ const StoreContextProvider = (props) => {
         await getCourses(capHoc_id, CTH_id, LKH_id);
       } else if (pathRoute === "/account/profile") {
         await getDetailUser(userIdFromStorage);
-      } else if (pathRoute === "/user-course") {
+      } else if (pathRoute === "/user/course") {
         await getUSerCourse(userIdFromStorage);
       } else if (pathRoute === "/instructor/course") {
         await InstructorCourse(userIdFromStorage, tokenFromStorage);
@@ -127,6 +127,18 @@ const StoreContextProvider = (props) => {
     };
     loadData();
   }, [pathRoute]);
+
+  const startExam = async (userExam) => {
+    const response = await fetch(`${URL}/api/exercise/startExam`,{
+      method : "POST",
+      headers: {
+        "Content-Type" : "application/json"
+      },
+      body : JSON.stringify(userExam)
+    })
+    const data = await response.json();;
+    return data.user_exam_id
+  }
 
   const ContextValues = {
     URL,
@@ -136,7 +148,8 @@ const StoreContextProvider = (props) => {
     ifUser,
     userCourse,
     instructorCourse,
-    getCourses
+    getCourses,
+    startExam
   };
 
   return (

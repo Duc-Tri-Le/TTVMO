@@ -62,18 +62,20 @@ const deleteCourse = async (req, res) => {
 };
 
 const getCourse = async (req, res) => {
-  const {CTH_id, LKH_id, capHoc_id} =  req.query;
+
+  const {capHoc_id, LKH_id, CTH_id} = req.query;
   const { result } = await getCourseModel();
 
   if (capHoc_id) {
-    result.course = result.course.filter(course => course.capHoc_id === Number(capHoc_id));
+    result.course = result.course.filter(
+      (course) => course.capHoc_id === Number(capHoc_id)
+    );
   }
   if (LKH_id) {
-    result.course = result.course.filter(course => course.LKH_id === Number(LKH_id));
-    console.log(result);
+    result.course = result.course.filter((course) => course.LKH_id === Number(LKH_id));
   }
   if (CTH_id) {
-    result.course = result.course.filter(course => course.CTH_id === Number(CTH_id));
+    result.course = result.course.filter((course) => course.CTH_id === Number(CTH_id));
   }
 
   return res.json(result);
@@ -113,9 +115,11 @@ const getInstructorCourse = async(req, res) =>{
   const result = await getInstructorCourseModel(gv_id);
   return res.json(result)
 }
+
 const getUSerCourse = async (req, res) => {
   try {
     const { user_id } = req.query;
+    // console.log(user_id);
     const { result } = await getUSerCourseModel(user_id);
 
     return res.json(result);

@@ -1,10 +1,22 @@
+/* ManagerUser.css */
+
 .manager-user-content {
     display: flex;
-    flex: 1;
+    height: 100vh;
+    /* full viewport height */
+    background-color: #f5f5f5;
+}
+
+.manager-user-content>.SidebarUser {
+    /* Nếu bạn muốn nhắm trực tiếp đến SidebarUser, bạn cần thêm class hoặc styled-component bên trong SidebarUser */
 }
 
 .manager-user-main {
     flex: 1;
+    /* chiếm toàn bộ không gian còn lại */
     padding: 20px;
+    background-color: #fff;
     overflow-y: auto;
+    width: 650px;
+    /* nếu nội dung dài thì scroll được */
 }

@@ -2,14 +2,16 @@ import { pool } from "../config/database.js";
 import fs from "fs";
 import path from "path";
 import { __dirname, __filename } from "../uploads/url.js";
+import { log } from "console";
 
 
 const addReviewModel = async (ifReview, ifImage) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
-
+  
     const review_id = await insertReview(connection, ifReview);
+   
     // console.log('====================================');
     // console.log(review_id);
     // console.log('====================================');
@@ -81,20 +83,11 @@ const deleteReviewModel = async (review_id) => {
 };
 
 const getReviewModel = async (khoaHoc_id) => {
-  const getReview = `select  rv.review_id, rv.content, rv.create_at, rv.update_at, rv.user_id, rv.parent_id,
-  group_concat(fb.content SEPARATOR "/") as fb_content, 
-  group_concat(distinct fb.review_id) as fb_review_id,
-  any_value ( fb.create_at) as fb_create_at, 
-  any_value ( fb.update_at) as fb_update_at, 
-  any_value ( fb.user_id) as fb_user_id, 
-  any_value ( fb.parent_id) as fb_parent_id
-  
-  from review rv
-  left join review fb on rv.review_id = fb.parent_id
-
-  where rv.khoaHoc_id = ?
-  
-  group by rv.review_id;`;
+  const getReview = `select rv.review_id, rv.khoaHoc_id, rv.content, rv.create_at, rv.update_at, rv.rating,
+  tk.tenDangNhap
+   from review rv
+   join taikhoan tk on tk.taiKhoan_id = rv.user_id
+  where khoaHoc_id = ?`;
 
   const [reviews] = await pool.execute(getReview, [khoaHoc_id]);
 
@@ -116,6 +109,7 @@ const insertReview = async (connection, ifReview) => {
       daugiatri.push("?");
     }
   }
+
   const sql = `insert into review(${fields.join(",")}) values(${daugiatri.join(
     ", "
   )})`;
