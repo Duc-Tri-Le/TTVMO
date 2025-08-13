@@ -1,5 +1,5 @@
 import React, { use, useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { StoreContext } from "../../../context/StoreContext";
 import "./DoExam.css";
 
@@ -7,9 +7,33 @@ const DoExam = () => {
   const location = useLocation();
   const { URL } = useContext(StoreContext);
   const [ifQuestion, setIfQuestion] = useState([]);
-  const [userAnswer, setUserAnswer] = useState({});
+  const [userAnswer, setUserAnswer] = useState(() => {
+    const saved = localStorage.getItem("userExam");
+    return saved ? JSON.parse(saved) : {};
+  });
   const { exam, user_exam_id } = location.state || [];
+  const navigate = useNavigate();
+  const [timeLeft, setTimeLeft] = useState(Number(exam.time_limit) * 60);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          submitExam(); 
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s < 10 ? "0" : ""}${s}`;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,25 +56,40 @@ const DoExam = () => {
   const handleChooseAnswer = (index, question_id, answer_id) => {
     const update = {
       ...userAnswer,
-      [index]: {question_id, answer_id}
-    }
+      [index]: { question_id, answer_id },
+    };
     setUserAnswer(update);
-    localStorage.setItem("userExam", JSON.stringify(update))
+    localStorage.setItem("userExam", JSON.stringify(update));
   };
-  
-  const submitExam = () => {
-    fetch(`${URL}/api/exercise/submitExam`, {
-      method : "POST",
-      headers : {
-        "Content-Type" : "application/json",
+
+  const submitExam = async() => {
+    await fetch(`${URL}/api/exercise/submitExam`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      body : JSON.stringify({userAnswer, user_exam_id})
-    })
-  }
-  console.log(userAnswer);
+      body: JSON.stringify({
+        userAnswer,
+        user_exam_id,
+        BKT_id: exam.BKT_id,
+        number_question: exam.soCauHoi,
+      }),
+    });
+    localStorage.removeItem("userExam");
+    navigate(`/complete/exam/${exam.tenBKT}`, {
+      state: {
+        is_complete: true,
+        exam: exam,
+        user_exam_id,
+        ifQuestion,
+      },
+    });
+  };
+  // console.log({userAnswer, user_exam_id, BKT_id : exam.BKT_id, number_question : exam.number_question});
   return (
     <div className="exam-container">
       <p>{exam?.tenBKT}</p>
+      <div className="timer">⏳ {formatTime(timeLeft)}</div>
       <div className="exam-ifQuestion">
         <div className="exam-ifQuestion">
           {ifQuestion?.map((question, index) => {
@@ -69,8 +108,14 @@ const DoExam = () => {
                         type="radio"
                         name={`question-${question.cauHoi_id}`}
                         value={answerIds[i]}
-                        checked = {userAnswer[index]?.answer_id === answerIds[i]}
-                        onChange={() => handleChooseAnswer(index, question?.cauHoi_id, answerIds[i])}
+                        checked={userAnswer[index]?.answer_id === answerIds[i]}
+                        onChange={() =>
+                          handleChooseAnswer(
+                            index,
+                            question?.cauHoi_id,
+                            answerIds[i]
+                          )
+                        }
                       />
                       {content}
                     </label>

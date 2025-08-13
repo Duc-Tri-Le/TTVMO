@@ -8,6 +8,7 @@ import {
   getDetailExerciseModel,
   getListExerciseModel,
   submitExamModel,
+  completeExamModel,
 } from "../model/exerciseModel.js";
 
 const addExercise = async (req, res) => {
@@ -91,14 +92,23 @@ const startExam = async (req, res) => {
 };
 
 const submitExam = async (req, res) => {
-  const { user_exam_id, userAnswer } = req.body;
-  console.log({ user_exam_id, userAnswer });
-  const { message, score, duration } = await submitExamModel(
+  const { user_exam_id, userAnswer,BKT_id,number_question } = req.body;
+  // console.log({ user_exam_id, userAnswer, BKT_id,number_question });
+  
+  const { message, scoreRounded, duration } = await submitExamModel(
     user_exam_id,
-    userAnswer
+    userAnswer,
+    BKT_id,number_question
   );
-  return res.json({ message, score, duration });
+  return res.json({ message, scoreRounded, duration });
 };
+
+const completeExam = async (req, res) =>{ 
+  const {user_exam_id, BKT_id} = req.query;
+  // console.log(user_exam_id, BKT_id);
+  const {result, answer_id_correct} = await completeExamModel(user_exam_id, BKT_id);
+  return res.json({result, answer_id_correct})
+}
 
 export {
   addExercise,
@@ -111,4 +121,5 @@ export {
   getDetailExercise,
   startExam,
   submitExam,
+  completeExam
 };

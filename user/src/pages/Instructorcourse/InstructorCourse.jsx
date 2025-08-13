@@ -3,10 +3,12 @@ import "./InstructorCourse.css";
 import ManagerUser from "../ManagerUser/ManagerUser";
 import { useContext } from "react";
 import { StoreContext } from "../../../context/StoreContext";
+import { useNavigate } from "react-router-dom";
 
 const InstructorCourse = () => {
   const {instructorCourse } = useContext(StoreContext);
   const [statusFilter, setStatusFilter] = useState("all");
+  const navigate = useNavigate();
   const courseFilter = instructorCourse?.filter((course) => {
     // 1. Lọc theo trạng thái
     if (statusFilter === "all") {
@@ -20,6 +22,12 @@ const InstructorCourse = () => {
     }
     return true;
   });
+
+  const handleOnclick = (course) => {
+    navigate(`/detail/course/${course.tenKhoaHoc}`, {
+      state : {course : course}
+    })
+  }
   return (
     <ManagerUser>
       <div className="instructor-course-container">
@@ -54,7 +62,7 @@ const InstructorCourse = () => {
             </thead>
             <tbody>
               {courseFilter?.map((course, index) => (
-                <tr key={course.khoaHoc_id}>
+                <tr key={course.khoaHoc_id} onClick={() => handleOnclick(course)}>
                   <td>{index + 1}</td>
                   <td>{course?.tenKhoaHoc}</td>
                   <td>{new Date(course.hanDangKy).toLocaleString("vi-VN")}</td>

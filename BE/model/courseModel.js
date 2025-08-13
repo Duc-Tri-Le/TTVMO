@@ -199,8 +199,12 @@ const getUSerCourseModel = async (user_id) => {
 };
 
 const getInstructorCourseModel = async (gv_id) => {
-  const sql = `select ANY_VALUE(kh.tenKhoaHoc) as tenKhoaHoc,
+  const sql = `select
+  any_value(tk.taiKhoan_id) as gv_id, 
+  any_value(tk.tenDangNhap)as giang_vien ,
+  ANY_VALUE(kh.tenKhoaHoc) as tenKhoaHoc,
   kh.khoaHoc_id, 
+  any_value(kh.giaca) as giaca,
   ANY_Value(kh.hanDangKy) as hanDangKy,
   ANY_Value(kh.ngayTao) as ngayTao,
   ANY_VALUE(kh.ngayBatDau) as ngayBatDau,
@@ -211,7 +215,7 @@ const getInstructorCourseModel = async (gv_id) => {
   count(dkkh.user_id) as  HVHT
   from khoahoc kh
   left join dangkikhoahoc dkkh on dkkh.course_id = kh.khoaHoc_id
-  
+  join taikhoan tk on tk.taiKhoan_id = kh.gv_tao
     where gv_tao = ?
     group by kh.khoaHoc_id`;
   const [rows] = await pool.execute(sql, [gv_id]);

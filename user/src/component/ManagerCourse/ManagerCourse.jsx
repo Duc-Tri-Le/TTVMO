@@ -48,7 +48,7 @@ const ManagerCourse = ({ khoaHoc_id, nguoiTao_id, listExam }) => {
               {new Date(exam.ngayTao).toLocaleDateString("vi-VN")}
             </p>
           </div>
-        ))}
+      ))}
     </div>
   );
 };
