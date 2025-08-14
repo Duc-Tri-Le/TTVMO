@@ -10,7 +10,7 @@ const StoreContextProvider = (props) => {
   const [ifUser, setIfUser] = useState([]);
   const [userCourse, setUserCourse] = useState([]);
   const [instructorCourse, setInstructorCourse] = useState([]);
- 
+  const role = localStorage.getItem("role")
   const pathRoute = window.location.pathname;
 
   const searchParams = new URLSearchParams(location.search);
@@ -92,6 +92,7 @@ const StoreContextProvider = (props) => {
 
   const InstructorCourse = async (userId, tokenFromStorage) => {
     try {
+
       const instructorCourse = await fetch(
         `${URL}/api/course/getInstructorCourse?gv_id=${userId}`,
         {
@@ -146,9 +147,13 @@ const StoreContextProvider = (props) => {
     token,
     userId,
     ifUser,
+    role,
     userCourse,
     instructorCourse,
+    InstructorCourse,
     getCourses,
+    getUSerCourse,
+    listCourse,
     startExam
   };
 

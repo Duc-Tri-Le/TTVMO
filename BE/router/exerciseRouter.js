@@ -10,6 +10,7 @@ exerciseRouter.post("/addAnswer",authMiddleware, authorizeRoles("giang_vien"), a
 exerciseRouter.delete("/deleteExercise",authMiddleware, authorizeRoles("giang_vien"), deleteExercise);
 exerciseRouter.delete("/deleteQuestion",authMiddleware, authorizeRoles("giang_vien"), deleteQUestion);
 exerciseRouter.delete("/deleteAnswer",authMiddleware, authorizeRoles("giang_vien"), deleteAnswer);
+
 //all
 exerciseRouter.get("/listExercise", getListExerCise);
 exerciseRouter.get("/detailExercise", getDetailExercise);

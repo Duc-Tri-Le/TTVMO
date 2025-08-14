@@ -150,7 +150,7 @@ const DetailCourse = () => {
         {role === "giang_vien" && Number(user_id) === course.gv_id ? (
           <ManagerCourse khoaHoc_id={course.khoaHoc_id} nguoiTao_id={user_id} listExam={listExam} />
         ) : (
-          <StudentCourse khoaHoc_id={course.khoaHoc_id} nguoiTao_id={user_id} listExam={listExam} />
+          <StudentCourse listExam={listExam} list_student={course.danh_sach_hoc_vien} />
         )}
       </div>
     </div>

@@ -108,7 +108,7 @@ const getCourseModel = async () => {
     any_value(cth.CTH_id) as CTH_id,
     any_value(ch.tenCapHoc) as tenCapHoc,
     any_value(ch.capHoc_id) as capHoc_id,
-    any_value(soHVHT.soSVHT) as soSVHT,
+    count(dkkh.user_id) as soSVHT,
     group_concat(distinct tk.tenNguoiDung order by tk.tenNguoiDung asc) as giang_vien,
     group_concat(dkkh.user_id) AS danh_sach_hoc_vien
 
@@ -116,7 +116,6 @@ const getCourseModel = async () => {
   left join loaikhoahoc lhk on lhk.LKH_id = kh.LKH_id
   left join chuongtrinhhoc cth on lhk.CTH_id = cth.CTH_id
   left join caphoc ch on ch.capHoc_id = cth.capHoc_id
-  left join sohvht on sohvht.khoaHoc_id = kh.khoaHoc_id
   left join taikhoan tk on tk.taiKhoan_id = kh.gv_tao
   left join dangkikhoahoc dkkh on dkkh.course_id = kh.khoaHoc_id
   

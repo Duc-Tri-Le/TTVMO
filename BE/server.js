@@ -12,6 +12,7 @@ import documentRouter from "./router/documentRouter.js";
 import exerciseRouter from "./router/exerciseRouter.js";
 import reviewRouter from "./router/reviewRouter.js";
 import paymentRouter from "./payment/payment.js";
+import statisticRouter from "./router/statisticRouter.js";
 
 const app = express();
 const port = 4000;
@@ -36,7 +37,7 @@ app.use("/api/document", documentRouter);
 app.use("/api/exercise", exerciseRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api", paymentRouter);
-
+app.use("/api/statistic", statisticRouter)
 app.listen(port, () => {
     console.log("da khoi tao", port)
 })

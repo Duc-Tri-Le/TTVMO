@@ -328,6 +328,8 @@ const completeExamModel = async (user_exam_id, BKT_id) => {
     connection.release();
   }
 };
+
+
 export {
   addExerciseModel,
   addAnswerModel,

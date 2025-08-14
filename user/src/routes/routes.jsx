@@ -22,6 +22,7 @@ const configRoutes = {
   AddExam: "/add/exam",
   DoExam: "/do/exam/:id",
   CompleteExam: "/complete/exam/:id",
+  StatisticsCourse : "/statistic/course"
 };
 
 const privateRouter = [];
@@ -71,6 +72,9 @@ const publicRouter = [
     path: configRoutes.CompleteExam,
     element: completeExam,
   },
+  {
+    path : configRoutes.StatisticsCourse, element : StatisticsCourse
+  }
 ];
 
 export { configRoutes, publicRouter, privateRouter };

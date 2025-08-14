@@ -110,6 +110,7 @@ const completeExam = async (req, res) =>{
   return res.json({result, answer_id_correct})
 }
 
+
 export {
   addExercise,
   addQuestion,
@@ -121,5 +122,5 @@ export {
   getDetailExercise,
   startExam,
   submitExam,
-  completeExam
+  completeExam,
 };
