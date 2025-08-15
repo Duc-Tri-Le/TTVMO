@@ -43,7 +43,7 @@ left join baikiemtra bkt on bkt.BKT_id = lue.exam_id
   GROUP BY 
       ls.taiKhoan_id, 
       ls.tenDangNhap
-    `
+    `;
     const [rows] = await connection.execute(sql1, [course_id, course_id]);
 
     //diem trung binh theo tung bai cua khoa hoc
@@ -79,7 +79,7 @@ left join baikiemtra bkt on bkt.BKT_id = lue.exam_id
 
     const [result] = await connection.execute(sql2, [course_id]);
     connection.commit();
-    return {result, rows};
+    return { result, rows };
   } catch (error) {
     connection.rollback();
   } finally {
@@ -87,7 +87,7 @@ left join baikiemtra bkt on bkt.BKT_id = lue.exam_id
   }
 };
 
-const statisticStudentModel = async ( course_id, user_id) =>{
+const statisticStudentModel = async (course_id, user_id) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -138,5 +138,45 @@ const statisticStudentModel = async ( course_id, user_id) =>{
   } finally {
     connection.release();
   }
-}
-export { statisticInstructorModel, statisticStudentModel };
+};
+
+const statisticAdminModel = async (start_at, end_date, group_by) => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    //doanh thu theo thoi gian
+    const sql = `SELECT 
+      CASE 
+          WHEN ? = 'day' THEN DATE_FORMAT(register_date, '%Y-%m-%d')
+          WHEN ? = 'week' THEN DATE_FORMAT(register_date, '%x-W%v')
+          WHEN ? = 'month' THEN DATE_FORMAT(register_date, '%Y-%m')
+          WHEN ? = 'year' THEN DATE_FORMAT(register_date, '%Y')
+      END AS thoi_gian,
+      COUNT(DISTINCT user_id) AS so_nguoi_dang_ky,
+      SUM(amount_paid) AS tong_doanh_thu
+        FROM dangkikhoahoc
+        WHERE register_date BETWEEN ? AND ?
+        GROUP BY thoi_gian
+        ORDER BY thoi_gian;
+    `;
+    const [result] = await connection.execute(
+      sql,
+      [group_by,
+      group_by,
+      group_by,
+      group_by,
+      start_at,
+      end_date]
+    );
+
+    connection.commit();
+    return result;
+    //lay diem trung binh
+  } catch (error) {
+    connection.rollback();
+  } finally {
+    connection.release();
+  }
+};
+export { statisticInstructorModel, statisticStudentModel, statisticAdminModel };

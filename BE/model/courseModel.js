@@ -120,7 +120,7 @@ const getCourseModel = async () => {
   left join dangkikhoahoc dkkh on dkkh.course_id = kh.khoaHoc_id
   
   group by kh.khoaHoc_id
-  order by ngayTao desc;
+  order by soSVHT desc;
     `;
 
   const [result] = await pool.execute(getCourse);

@@ -17,6 +17,7 @@ const Sidebar = () => {
     { to: "/instructor", imgSrc: "", text: "Giảng viên" },
     { to: "/student", imgSrc: "", text: "Học viên" },
     { to: "/course", imgSrc: "", text: "Khoá học" },
+    { to : "/statistic", imgSrc : "", text: "Thống kê"}
   ];
 
   return (

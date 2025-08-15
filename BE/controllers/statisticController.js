@@ -1,5 +1,5 @@
 import { json } from "express";
-import { statisticInstructorModel, statisticStudentModel } from "../model/statisticModel.js";
+import { statisticAdminModel, statisticInstructorModel, statisticStudentModel } from "../model/statisticModel.js";
 
 const statisticInstructor = async (req, res) => {
     const {course_id} = req.query;
@@ -15,4 +15,10 @@ const statisticStudent = async (req,res) => {
     return res.json(result)
 }
 
-export {statisticInstructor, statisticStudent}
+const statisticAdmin = async (req, res) => {
+    const {start_date, end_date, group_by} = req.query;
+    console.log({start_date,end_date, group_by});
+    const result = await statisticAdminModel(start_date, end_date, group_by);
+    return res.json(result)
+}
+export {statisticInstructor, statisticStudent, statisticAdmin}
