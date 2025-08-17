@@ -89,6 +89,10 @@ const deleteCourseModel = async (khoaHoc_id) => {
 };
 
 const getCourseModel = async () => {
+  const now = new Date();
+  const formatted = now.toLocaleDateString("sv-SE"); // YYYY-MM-DD theo local
+  console.log(formatted);
+
   const getCourse = `select 
     any_value(lhk.tenLKH) as tenLKH, 
     any_value(lhk.LKH_id) as LKH_id,
@@ -109,6 +113,7 @@ const getCourseModel = async () => {
     any_value(ch.tenCapHoc) as tenCapHoc,
     any_value(ch.capHoc_id) as capHoc_id,
     count(dkkh.user_id) as soSVHT,
+    any_value(tk.taiKHoan_id) as gv_id,
     group_concat(distinct tk.tenNguoiDung order by tk.tenNguoiDung asc) as giang_vien,
     group_concat(dkkh.user_id) AS danh_sach_hoc_vien
 
@@ -119,11 +124,12 @@ const getCourseModel = async () => {
   left join taikhoan tk on tk.taiKhoan_id = kh.gv_tao
   left join dangkikhoahoc dkkh on dkkh.course_id = kh.khoaHoc_id
   
+  where kh.hanDangKy <= ? 
   group by kh.khoaHoc_id
   order by soSVHT desc;
     `;
 
-  const [result] = await pool.execute(getCourse);
+  const [result] = await pool.execute(getCourse, [formatted]);
   return {
     result: {
       message: "danh sach khoa hoc",

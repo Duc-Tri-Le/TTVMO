@@ -9,6 +9,7 @@ import OnlineCourse from "../pages/onlineCourse/onlineCourse.jsx";
 import AddExam from "../pages/AddExam/AddExam.jsx";
 import DoExam from "../pages/doExam/DoExam.jsx";
 import completeExam from "../pages/completeExam/completeExam.jsx";
+import HistoryExam from "../pages/HistoryExam/HistoryExam.jsx";
 
 const configRoutes = {
   home: "/home",
@@ -22,7 +23,8 @@ const configRoutes = {
   AddExam: "/add/exam",
   DoExam: "/do/exam/:id",
   CompleteExam: "/complete/exam/:id",
-  StatisticsCourse : "/statistic/course"
+  StatisticsCourse : "/statistic/course",
+  HistoryExam : "history/exam"
 };
 
 const privateRouter = [];
@@ -74,6 +76,9 @@ const publicRouter = [
   },
   {
     path : configRoutes.StatisticsCourse, element : StatisticsCourse
+  },
+  {
+    path : configRoutes.HistoryExam,element : HistoryExam
   }
 ];
 

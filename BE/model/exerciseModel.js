@@ -329,6 +329,23 @@ const completeExamModel = async (user_exam_id, BKT_id) => {
   }
 };
 
+const historyExamModel = async(user_id) => {
+  console.log(user_id);
+  const sql =`select ue.score, ue.duration, bkt.tenBKT, kh.tenKhoaHoc, ue.user_exam_id, bkt.BKT_id
+  from userExam ue
+  join baikiemtra bkt on bkt.BKT_id = ue.exam_id
+  join khoahoc kh on kh.khoaHoc_id = bkt.khoaHoc_id
+  where ue.user_id = ?
+  order by ue.start_at desc
+  `
+  const [result] = await pool.execute(sql, [user_id]);
+  return result
+}
+
+const deleteExamModel = async(user_exam_id) => {
+  const sql = `delete from userExam where uer_exam_id = ?`;
+  await pool.execute(sql, [user_exam_id]);
+}
 
 export {
   addExerciseModel,
@@ -341,5 +358,7 @@ export {
   getDetailExerciseModel,
   startExamModel,
   submitExamModel,
+  historyExamModel,
   completeExamModel,
+  deleteExamModel
 };

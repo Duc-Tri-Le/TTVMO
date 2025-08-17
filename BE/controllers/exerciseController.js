@@ -9,6 +9,8 @@ import {
   getListExerciseModel,
   submitExamModel,
   completeExamModel,
+  historyExamModel,
+  deleteExamModel,
 } from "../model/exerciseModel.js";
 
 const addExercise = async (req, res) => {
@@ -69,6 +71,7 @@ const getListExerCise = async (req, res) => {
 
 const getDetailExercise = async (req, res) => {
   const { BKT_id } = req.query;
+  console.log(BKT_id);
   const result = await getDetailExerciseModel(BKT_id);
   return res.json(result);
 };
@@ -110,7 +113,17 @@ const completeExam = async (req, res) =>{
   return res.json({result, answer_id_correct})
 }
 
+const historyExam = async (req, res) => {
+  const {user_id} = req.query;
+  const result = await historyExamModel(user_id);
+  console.log(result);
+  return res.json(result)
+}
 
+const deleteExam = async (req, res) => {
+  const {user_exam_id} = req.query;
+  await deleteExamModel(user_exam_id);
+}
 export {
   addExercise,
   addQuestion,
@@ -123,4 +136,6 @@ export {
   startExam,
   submitExam,
   completeExam,
+  historyExam,
+  deleteExam
 };

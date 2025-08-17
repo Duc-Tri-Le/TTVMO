@@ -5,15 +5,30 @@ import "./CompleteExam.css";
 
 const completeExam = () => {
   const location = useLocation();
-  const { is_complete, exam, user_exam_id, ifQuestion } = location.state || {};
+  const { is_complete, exam_id, user_exam_id } = location.state || {};
   const { URL } = useContext(StoreContext);
   const [ifExam, setIfExam] = useState([]);
   const [isCorrect, setIsCorrect] = useState([]);
+  const [ifQuestion, setIfQuestion] = useState([]);
 
+  console.log({exam_id, user_exam_id});
   useEffect(() => {
     const loadData = async () => {
+      const response1 = await fetch(
+        `${URL}/api/exercise/detailExercise?BKT_id=${exam_id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const result = await response1.json();
+      setIfQuestion(result);
+
       const response = await fetch(
-        `${URL}/api/exercise/complete/exam?user_exam_id=${user_exam_id}&BKT_id=${exam.BKT_id}`,
+        `${URL}/api/exercise/complete/exam?user_exam_id=${user_exam_id}&BKT_id=${exam_id}`,
         {
           method: "GET",
           headers: {
@@ -28,6 +43,7 @@ const completeExam = () => {
     loadData();
   }, []);
 
+  // console.log({ifExam, isCorrect});
   const mergedData = ifQuestion?.map((question) => {
     const userResult = ifExam.find(
       (res) => res.cauHoi_id === question.cauHoi_id

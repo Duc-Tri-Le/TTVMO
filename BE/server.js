@@ -13,6 +13,11 @@ import exerciseRouter from "./router/exerciseRouter.js";
 import reviewRouter from "./router/reviewRouter.js";
 import paymentRouter from "./payment/payment.js";
 import statisticRouter from "./router/statisticRouter.js";
+import {fileURLToPath} from "url";
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 4000;
@@ -24,10 +29,10 @@ app.use(cors());
 
 //connect data
 await connectDatabase();
-
+console.log(__dirname);
 //api
 app.use("/api/user", userRouter);
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/grade", gradeRouter);
 app.use("/api/program", programRouter);
 app.use("/api/courseType", courseTypeRouter);

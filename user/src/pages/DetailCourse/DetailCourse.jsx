@@ -13,8 +13,10 @@ const DetailCourse = () => {
   const [listLesson, setListLesson] = useState([]);
   const user_id = localStorage.getItem("userId");
   const role = localStorage.getItem("role");
-  const [listExam, setListExam] = useState([])
-  // console.log({user_id, gv: course.gv_id});
+  const [listExam, setListExam] = useState([]);
+  const [currentVideo, setCurrentVideo] = useState(null);
+
+  console.log(listLesson);
   if (!course) {
     return <p>Không tìm thấy thông tin khóa học.</p>;
   }
@@ -32,14 +34,17 @@ const DetailCourse = () => {
         const data = await response.json();
         setListLesson(data);
 
-        const getExam =  await fetch(`${URL}/api/exercise/listExercise?khoaHoc_id=${course.khoaHoc_id}`, {
-          method : "GET",
-          headers : {
-            "Content-Type" : "application/json"
+        const getExam = await fetch(
+          `${URL}/api/exercise/listExercise?khoaHoc_id=${course.khoaHoc_id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        })
+        );
         const exam = await getExam.json();
-        setListExam(exam.result)
+        setListExam(exam.result);
       } catch (error) {
         console.error("Lỗi load bài học:", error);
       }
@@ -59,20 +64,22 @@ const DetailCourse = () => {
     const { url } = data;
     window.location.href = url;
   };
-  
-  const handleLink = (mien_phi, danh_sach_hoc_vien, e) => {
+
+  const handleLink = (mien_phi, danh_sach_hoc_vien, videoURL, e) => {
     const isFree = mien_phi !== "khong";
     const danhSachHocVienArr = danh_sach_hoc_vien
       ? danh_sach_hoc_vien.split(",")
       : [];
     const isRegistered = danhSachHocVienArr.includes(user_id);
 
-    if (!isFree && !isRegistered) {
+    if (user_id === course.gv_id && !isFree && !isRegistered) {
       e.preventDefault();
       alert("Vui lòng đăng ký khóa học");
       return false;
     }
-    return true;
+
+    e.preventDefault(); // chặn reload / mở tab mới
+    setCurrentVideo(videoURL); // lưu video đang xem vào state
   };
 
   return (
@@ -129,28 +136,44 @@ const DetailCourse = () => {
         </div>
         {/* bai giang */}
         {listLesson?.map((lesson) => (
-          <div className="lesson-item" key={lesson.BG_id}>
+          <div key={lesson.BG_id}>
             <a
-              className="lesson-link"
-              href={lesson.videoURL}
+              href="#"
               onClick={(e) =>
-                handleLink(lesson.mien_phi, course.danh_sach_hoc_vien, e)
+                handleLink(
+                  lesson.mien_phi,
+                  course.danh_sach_hoc_vien,
+                  lesson.videoURL,
+                  e
+                )
               }
             >
               {lesson.tenBG}
             </a>
-            {lesson.mien_phi !== "khong" && (
-              <p className="lesson-free">Miễn phí</p>
-            )}
           </div>
         ))}
+
+        {currentVideo && (
+          <div className="video-viewer">
+            <video controls width="800">
+              <source src={`${URL}/uploads/video${currentVideo}`} type="video/mp4" />
+            </video>
+          </div>
+        )}
         <Review course_id={course.khoaHoc_id} user_id={user_id} URL={URL} />
       </div>
       <div className="manager-course-statistic">
         {role === "giang_vien" && Number(user_id) === course.gv_id ? (
-          <ManagerCourse khoaHoc_id={course.khoaHoc_id} nguoiTao_id={user_id} listExam={listExam} />
+          <ManagerCourse
+            khoaHoc_id={course.khoaHoc_id}
+            nguoiTao_id={user_id}
+            listExam={listExam}
+          />
         ) : (
-          <StudentCourse listExam={listExam} list_student={course.danh_sach_hoc_vien} />
+          <StudentCourse
+            listExam={listExam}
+            list_student={course.danh_sach_hoc_vien}
+          />
         )}
       </div>
     </div>

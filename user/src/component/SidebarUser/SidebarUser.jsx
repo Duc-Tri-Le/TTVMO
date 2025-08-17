@@ -18,7 +18,8 @@ const SidebarUser = () => {
     { to: "/account/profile", imgSrc: "", text: "Thông tin người dùng" },
     { to: "/user/course", imgSrc: "", text: "Khoá học đã tham gia" },
     ...(role === "giang_vien" ? [{ to: "/instructor/course", imgSrc:"", text : "Khoá học của giảng viên" }] : []),
-    {to : "/statistic/course", imgSrc: "", text: "Thống kê"}
+    {to : "/statistic/course", imgSrc: "", text: "Thống kê"},
+    {to : "/history/exam", imgSrc : "", text : "Lịch sử bài làm"}
   ];
 
   return (

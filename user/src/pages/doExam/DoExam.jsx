@@ -11,7 +11,15 @@ const DoExam = () => {
     const saved = localStorage.getItem("userExam");
     return saved ? JSON.parse(saved) : {};
   });
-  const { exam, user_exam_id } = location.state || [];
+  const savedExamInfo = JSON.parse(localStorage.getItem("examInfo")) || {};
+  const { exam, user_exam_id } = location.state || savedExamInfo;
+
+  // nếu có exam, lưu lại vào localStorage (để reload không mất)
+  useEffect(() => {
+    if (exam && user_exam_id) {
+      localStorage.setItem("examInfo", JSON.stringify({ exam, user_exam_id }));
+    }
+  }, [exam, user_exam_id]);
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState(Number(exam.time_limit) * 60);
 
@@ -20,7 +28,7 @@ const DoExam = () => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          submitExam(); 
+          submitExam();
           return 0;
         }
         return prev - 1;
@@ -62,7 +70,7 @@ const DoExam = () => {
     localStorage.setItem("userExam", JSON.stringify(update));
   };
 
-  const submitExam = async() => {
+  const submitExam = async () => {
     await fetch(`${URL}/api/exercise/submitExam`, {
       method: "POST",
       headers: {
@@ -76,15 +84,47 @@ const DoExam = () => {
       }),
     });
     localStorage.removeItem("userExam");
+    localStorage.removeItem("examInfo");
     navigate(`/complete/exam/${exam.tenBKT}`, {
       state: {
         is_complete: true,
-        exam: exam,
+        exam_id: exam.BKT_id,
         user_exam_id,
-        ifQuestion,
       },
     });
   };
+  
+  useEffect(() => {
+    // Khi reload/thoát tab
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+      return e.returnValue;
+    };
+
+    // Khi bấm nút Back trên trình duyệt
+    const handlePopState = (e) => {
+      const confirmLeave = window.confirm(
+        "Bạn có muốn lưu đáp án trước khi thoát không?"
+      );
+      if (confirmLeave) {
+        submitExam(); // gọi API hoặc lưu localStorage
+      } else {
+        window.history.pushState(null, null, window.location.pathname);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("popstate", handlePopState);
+
+    // chặn user quay lại ngay lần đầu
+    window.history.pushState(null, null, window.location.pathname);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [submitExam]);
   // console.log({userAnswer, user_exam_id, BKT_id : exam.BKT_id, number_question : exam.number_question});
   return (
     <div className="exam-container">

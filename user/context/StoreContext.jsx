@@ -10,13 +10,21 @@ const StoreContextProvider = (props) => {
   const [ifUser, setIfUser] = useState([]);
   const [userCourse, setUserCourse] = useState([]);
   const [instructorCourse, setInstructorCourse] = useState([]);
-  const role = localStorage.getItem("role")
+  const [role, setRole] = useState("");
+  const [listHistoryExam, setListHistoryExam] = useState([]);
+
   const pathRoute = window.location.pathname;
 
   const searchParams = new URLSearchParams(location.search);
   const capHoc_id = searchParams.get("capHoc_id");
   const CTH_id = searchParams.get("CTH_id");
   const LKH_id = searchParams.get("LKH_id");
+
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+    setUserId(localStorage.getItem("userId"));
+    setRole(localStorage.getItem("role"));
+  }, [])
 
   const getCourses = async (capHoc_id, CTH_id, LKH_id) => {
     try {
@@ -41,6 +49,18 @@ const StoreContextProvider = (props) => {
       console.log(error);
     }
   };
+  
+  useEffect(() => {
+    const handlePopState = () => {
+      window.location.reload();
+    };
+    
+    window.addEventListener("popstate", handlePopState);
+  
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);  
 
   useEffect(() => {
     const handlePopState = () => {
@@ -110,12 +130,21 @@ const StoreContextProvider = (props) => {
     }
   };
 
+  const getListHistoryExam = async (userId) => {
+    const response = await fetch(`${URL}/api/exercise/history/exam?user_id=${userId}`, {
+      method : "GET",
+      headers :{
+        "Content-Type" : "application/json"
+      }
+    })
+    const data = await response.json();
+    setListHistoryExam(data);
+  }
+
   useEffect(() => {
     const loadData = async () => {
       const tokenFromStorage = localStorage.getItem("token");
       const userIdFromStorage = localStorage.getItem("userId");
-      setToken(tokenFromStorage);
-      setUserId(userIdFromStorage);
       if (pathRoute === "/home") {
         await getCourses(capHoc_id, CTH_id, LKH_id);
       } else if (pathRoute === "/account/profile") {
@@ -124,6 +153,8 @@ const StoreContextProvider = (props) => {
         await getUSerCourse(userIdFromStorage);
       } else if (pathRoute === "/instructor/course") {
         await InstructorCourse(userIdFromStorage, tokenFromStorage);
+      } else if(pathRoute === "/history/exam"){
+        await getListHistoryExam(userIdFromStorage)
       }
     };
     loadData();
@@ -154,7 +185,9 @@ const StoreContextProvider = (props) => {
     getCourses,
     getUSerCourse,
     listCourse,
-    startExam
+    startExam,
+    getListHistoryExam,
+    listHistoryExam
   };
 
   return (

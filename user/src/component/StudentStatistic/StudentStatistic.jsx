@@ -76,13 +76,6 @@ const StudentStatistic = ({ userId }) => {
         {selectedCourse ? (
           <div>
             <p>
-              <strong>Doanh thu:</strong>{" "}
-              {(
-                Number(selectedCourse.giaca) * selectedCourse.HVHT
-              ).toLocaleString()}
-              * VND
-            </p>
-            <p>
               <strong>Học viên hiện tại:</strong> {selectedCourse.HVHT}/
               {selectedCourse.soHVTD}
             </p>

@@ -30,8 +30,8 @@ const Header = () => {
 
       <nav className="header-nav">
         <a href="/home">Trang chủ</a>
-        <a href="/khoa-hoc">tài liệu</a>
-        <a href="/lien-he">Liên hệ</a>
+        {/* <a href="/khoa-hoc">tài liệu</a>
+        <a href="/lien-he">Liên hệ</a> */}
       </nav>
 
       <div className="header-auth-buttons">

@@ -1,109 +1,81 @@
+/* Wrapper toàn trang chi tiết khóa học */
 .detail-course-wrapper {
     display: flex;
-    flex-direction: row;
-    gap: 20px;
+    gap: 30px;
     padding: 20px;
-    background-color: #fafafa;
+    flex-wrap: nowrap;
 }
 
+/* Container thông tin khóa học + bài giảng */
 .detail-course-container {
-    flex: 2;
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    min-width: 600px;
+    flex: 1 1 65%;
+    min-width: 300px;
 }
 
-.if-detail-course h1 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-}
-
+/* Hình ảnh khóa học */
 .course-image {
     width: 100%;
-    max-height: 350px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin: 15px 0;
+    max-width: 600px;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
-.if-detail-course p {
-    margin: 6px 0;
+/* Danh sách bài giảng */
+.lesson-item {
+    margin-bottom: 10px;
 }
 
-.button-register-course {
-    margin-top: 15px;
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    font-size: 1rem;
+.lesson-item a {
+    color: #007bff;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.button-register-course:hover {
-    background: #0056b3;
-}
-
-.lesson-item {
-    background: #f9f9f9;
-    padding: 10px 15px;
-    border-radius: 6px;
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.lesson-link {
-    color: #333;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.lesson-link:hover {
-    color: #007bff;
+.lesson-item a:hover {
+    text-decoration: underline;
 }
 
 .lesson-free {
-    background: #28a745;
-    color: white;
-    font-size: 0.8rem;
-    padding: 2px 6px;
-    border-radius: 4px;
+    color: green;
+    font-weight: bold;
+    margin-left: 10px;
+    display: inline-block;
 }
 
-.manager-course-statistic {
-    flex: 1;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.manager-course-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.add-exam {
-    padding: 10px;
-    background: #007bff;
-    color: white;
-    border-radius: 6px;
+/* Video viewer */
+.video-viewer {
+    margin-top: 20px;
     text-align: center;
-    cursor: pointer;
 }
 
-.add-exam:hover {
-    background: #0056b3;
+.video-viewer video {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.list-exam {
-    background: #f1f1f1;
-    padding: 8px 12px;
+/* Button đăng ký khóa học */
+.button-register-course {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
     border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button-register-course:hover {
+    background-color: #0056b3;
+}
+
+/* Manager/Student course sidebar */
+.manager-course-statistic {
+    display: flex;
+    flex: 1 1 30%;
+    min-width: 250px;
 }

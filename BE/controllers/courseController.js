@@ -119,7 +119,7 @@ const getInstructorCourse = async(req, res) =>{
 const getUSerCourse = async (req, res) => {
   try {
     const { user_id } = req.query;
-    // console.log(user_id);
+    console.log(user_id);
     const { result } = await getUSerCourseModel(user_id);
 
     return res.json(result);

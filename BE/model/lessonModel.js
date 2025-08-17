@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 
 const addLessonModel = async (ifLesson, ifDocument) => {
-  KH_id;
+  
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
