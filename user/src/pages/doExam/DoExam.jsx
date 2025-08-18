@@ -108,7 +108,7 @@ const DoExam = () => {
         "Bạn có muốn lưu đáp án trước khi thoát không?"
       );
       if (confirmLeave) {
-        submitExam(); // gọi API hoặc lưu localStorage
+        submitExam(); // gọi API 
       } else {
         window.history.pushState(null, null, window.location.pathname);
       }

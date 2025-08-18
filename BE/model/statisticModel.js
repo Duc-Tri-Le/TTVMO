@@ -5,7 +5,7 @@ const statisticInstructorModel = async (course_id) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
-    // danh sach hoc vien
+    // danh sach hoc vien va diem tot nhat cua mn
     const sql1 = `
         WITH list_student AS (
           SELECT 
@@ -58,23 +58,23 @@ const statisticInstructorModel = async (course_id) => {
             ) AS rn
         FROM userExam ue
     )
-    SELECT 
-        bkt.BKT_id,
-        bkt.tenBKT, 
-        bkt.number_question,
-        AVG(beu.score) AS avg_score,
-        SEC_TO_TIME(AVG(TIME_TO_SEC(beu.duration))) AS avg_duration,
-        SUM(CASE WHEN ua.is_correct = 1 THEN 1 ELSE 0 END) AS total_correct_answers,
-        COUNT(DISTINCT beu.user_exam_id) AS total_exam
-    FROM best_exam_per_user_per_test beu
-    JOIN baikiemtra bkt 
-        ON beu.exam_id = bkt.BKT_id
-    LEFT JOIN userAnswer ua 
-        ON ua.user_exam_id = beu.user_exam_id
-    WHERE bkt.khoaHoc_id = ?
-      AND beu.rn = 1
-    GROUP BY bkt.BKT_id, bkt.tenBKT, bkt.number_question;  
-      `;
+        SELECT 
+            bkt.BKT_id,
+            bkt.tenBKT, 
+            bkt.number_question,
+            AVG(beu.score) AS avg_score,
+            SEC_TO_TIME(AVG(TIME_TO_SEC(beu.duration))) AS avg_duration,
+            SUM(CASE WHEN ua.is_correct = 1 THEN 1 ELSE 0 END) AS total_correct_answers,
+            COUNT(DISTINCT beu.user_exam_id) AS total_exam
+        FROM best_exam_per_user_per_test beu
+        JOIN baikiemtra bkt 
+            ON beu.exam_id = bkt.BKT_id
+        LEFT JOIN userAnswer ua 
+            ON ua.user_exam_id = beu.user_exam_id
+        WHERE bkt.khoaHoc_id = ?
+          AND beu.rn = 1
+        GROUP BY bkt.BKT_id, bkt.tenBKT, bkt.number_question;  
+          `;
 
     const [result] = await connection.execute(sql2, [course_id]);
     connection.commit();
