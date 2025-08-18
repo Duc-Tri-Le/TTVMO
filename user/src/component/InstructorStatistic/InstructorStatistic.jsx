@@ -162,26 +162,48 @@ const InstructorStatistic = ({ userId }) => {
             )}
 
             <h4>Bảng xếp hạng học viên</h4>
-            {listStudent.length > 0 ? (
-              listStudent.map((student) => (
-                <div className="rank-student" key={student.taiKhoan_id}>
-                  <div
-                    className="rank-student-name"
-                    onClick={() =>
-                      handleStatisticStudent(courseId, student.taiKhoan_id)
-                    }
-                  >
-                    {student.tenDangNhap}
-                  </div>
-                  <div className="rank-student-score">{student.avg_score}</div>
-                  <div className="rank-student-duration">
-                    {student.avg_duration}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>Không có học viên nào</p>
-            )}
+            <div className="rank-container">
+              <div className="rank-header">
+                <div>#</div>
+                <div>Tên học viên</div>
+                <div>Điểm</div>
+                <div>Thời gian</div>
+              </div>
+
+              {listStudent.length > 0 ? (
+                listStudent.map((student, index) => {
+                  let topClass = "";
+                  if (index === 0) topClass = "top1";
+                  else if (index === 1) topClass = "top2";
+                  else if (index === 2) topClass = "top3";
+
+                  return (
+                    <div
+                      className={`rank-student ${topClass}`}
+                      key={student.taiKhoan_id}
+                    >
+                      <div className="rank-position">{index + 1}</div>
+                      <div
+                        className="rank-student-name"
+                        onClick={() =>
+                          handleStatisticStudent(courseId, student.taiKhoan_id)
+                        }
+                      >
+                        {student.tenDangNhap}
+                      </div>
+                      <div className="rank-student-score">
+                        {student.avg_score}
+                      </div>
+                      <div className="rank-student-duration">
+                        {student.avg_duration}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>Không có học viên nào</p>
+              )}
+            </div>
           </div>
         ) : (
           <p>Vui lòng chọn một khóa học để xem thống kê</p>

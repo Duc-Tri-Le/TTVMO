@@ -7,43 +7,43 @@ const statisticInstructorModel = async (course_id) => {
     await connection.beginTransaction();
     // danh sach hoc vien
     const sql1 = `
-    WITH list_student AS (
-      SELECT 
-          tk.tenDangNhap,
-          tk.taiKhoan_id
-      FROM taikhoan tk
-      JOIN dangkikhoahoc dkkh 
-          ON tk.taiKhoan_id = dkkh.user_id
-      WHERE dkkh.course_id = ?
-  ),
-  latest_exam_per_user_per_test AS (
-      SELECT
-          ue.*,
-          ROW_NUMBER() OVER (
-              PARTITION BY ue.user_id, ue.exam_id
-              ORDER BY ue.score desc, ue.start_at DESC
-          ) AS rn
-      FROM userExam ue
-  )
-  SELECT 
-      ls.tenDangNhap, 
-      ls.taiKhoan_id,
-      AVG(lue.score) AS avg_score,
-      SEC_TO_TIME(AVG(TIME_TO_SEC(lue.duration))) AS avg_duration,
-      SUM(CASE WHEN ua.is_correct = 1 THEN 1 ELSE 0 END) AS total_correct_answers,
-      COUNT(DISTINCT lue.user_exam_id) AS total_user_exam
-  FROM list_student ls
-  LEFT JOIN latest_exam_per_user_per_test lue 
-      ON lue.user_id = ls.taiKhoan_id 
-      AND lue.rn = 1
-  LEFT JOIN userAnswer ua 
-      ON ua.user_exam_id = lue.user_exam_id
-left join baikiemtra bkt on bkt.BKT_id = lue.exam_id
-  WHERE bkt.khoaHoc_id = ?
-  GROUP BY 
-      ls.taiKhoan_id, 
-      ls.tenDangNhap
-  ORDER BY avg_score DESC, avg_duration ASC;
+        WITH list_student AS (
+          SELECT 
+              tk.tenDangNhap,
+              tk.taiKhoan_id
+          FROM taikhoan tk
+           JOIN dangkikhoahoc dkkh 
+              ON tk.taiKhoan_id = dkkh.user_id
+          WHERE dkkh.course_id = ?
+        ),
+        latest_exam_per_user_per_test AS (
+            SELECT
+                ue.*,
+                ROW_NUMBER() OVER (
+                    PARTITION BY ue.user_id, ue.exam_id
+                    ORDER BY ue.score desc, ue.duration asc, ue.start_at DESC
+                ) AS rn
+            FROM userExam ue
+        )
+        SELECT 
+            ls.tenDangNhap, 
+            ls.taiKhoan_id,
+            AVG(lue.score) AS avg_score,
+            SEC_TO_TIME(AVG(TIME_TO_SEC(lue.duration))) AS avg_duration,
+            SUM(CASE WHEN ua.is_correct = 1 THEN 1 ELSE 0 END) AS total_correct_answers,
+            COUNT(DISTINCT lue.exam_id) AS total_exam
+        FROM list_student ls
+        LEFT JOIN latest_exam_per_user_per_test lue 
+            ON lue.user_id = ls.taiKhoan_id 
+            AND lue.rn = 1
+        LEFT JOIN userAnswer ua 
+            ON ua.user_exam_id = lue.user_exam_id
+        left join baikiemtra bkt on bkt.BKT_id = lue.exam_id
+        WHERE bkt.khoaHoc_id = ?
+        GROUP BY 
+            ls.taiKhoan_id, 
+            ls.tenDangNhap
+        ORDER BY total_exam desc, avg_score DESC, avg_duration ASC;
     `;
     const [rows] = await connection.execute(sql1, [course_id, course_id]);
 
