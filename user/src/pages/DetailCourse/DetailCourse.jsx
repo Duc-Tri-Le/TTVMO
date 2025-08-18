@@ -72,7 +72,7 @@ const DetailCourse = () => {
       : [];
     const isRegistered = danhSachHocVienArr.includes(user_id);
 
-    if (user_id === course.gv_id && !isFree && !isRegistered) {
+    if (Number(user_id) !== course.gv_id && !isFree && !isRegistered) {
       e.preventDefault();
       alert("Vui lòng đăng ký khóa học");
       return false;
@@ -81,20 +81,12 @@ const DetailCourse = () => {
     e.preventDefault(); // chặn reload / mở tab mới
     setCurrentVideo(videoURL); // lưu video đang xem vào state
   };
-
+  console.log(course.gv_id === Number(user_id));
   return (
     <div className="detail-course-wrapper">
       <div className="detail-course-container">
         <div className="if-detail-course">
           <h1>{course.tenKhoaHoc}</h1>
-          {course.hinhanh && course.hinhanh !== "null" && (
-            <img
-              src={course.hinhanh}
-              alt={course.tenKhoaHoc}
-              className="course-image"
-            />
-          )}
-
           <p>
             <strong>Giảng viên:</strong> {course.giang_vien}
           </p>
@@ -136,9 +128,10 @@ const DetailCourse = () => {
         </div>
         {/* bai giang */}
         {listLesson?.map((lesson) => (
-          <div key={lesson.BG_id}>
+          <div key={lesson.BG_id} className="lesson-item">
             <a
               href="#"
+              className="lesson-link"
               onClick={(e) =>
                 handleLink(
                   lesson.mien_phi,
@@ -148,7 +141,10 @@ const DetailCourse = () => {
                 )
               }
             >
-              {lesson.tenBG}
+              {lesson.tenBG}{" "}
+              {lesson.mien_phi === "co" && (
+                <span className="lesson-free">(Miễn phí)</span>
+              )}
             </a>
           </div>
         ))}
@@ -156,7 +152,10 @@ const DetailCourse = () => {
         {currentVideo && (
           <div className="video-viewer">
             <video controls width="800">
-              <source src={`${URL}/uploads/video${currentVideo}`} type="video/mp4" />
+              <source
+                src={`${URL}/uploads/video${currentVideo}`}
+                type="video/mp4"
+              />
             </video>
           </div>
         )}

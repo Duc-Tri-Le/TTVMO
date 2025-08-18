@@ -95,7 +95,7 @@ const StudentStatistic = ({ userId }) => {
                   <Bar
                     dataKey="avg_score"
                     fill="#8884d8"
-                    name="Điểm trung bình"
+                    name="Điểm tốt nhất"
                   />
                   <Bar
                     dataKey="total_correct_answers"

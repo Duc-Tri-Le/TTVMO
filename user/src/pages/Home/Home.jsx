@@ -6,7 +6,6 @@ import Sidebar from "../../component/Sidebar/Sidebar.jsx";
 
 
 const Home = () => {
-
   return (
       <div className="container-home">
         <div className="banner-sidebar-home">

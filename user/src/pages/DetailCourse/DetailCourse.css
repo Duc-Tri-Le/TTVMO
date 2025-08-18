@@ -23,24 +23,32 @@
 
 /* Danh sách bài giảng */
 .lesson-item {
-    margin-bottom: 10px;
+    margin: 8px 0;
 }
 
-.lesson-item a {
-    color: #007bff;
+.lesson-link {
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    color: #333;
     text-decoration: none;
-    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.lesson-item a:hover {
-    text-decoration: underline;
+.lesson-link:hover {
+    background-color: #e6f2ff;
+    transform: translateX(4px);
+    color: #007bff;
 }
 
 .lesson-free {
-    color: green;
+    margin-left: 8px;
+    font-size: 14px;
     font-weight: bold;
-    margin-left: 10px;
-    display: inline-block;
+    color: #28a745;
+    /* xanh lá để nổi bật */
 }
 
 /* Video viewer */

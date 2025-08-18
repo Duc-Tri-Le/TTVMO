@@ -42,7 +42,7 @@ const SignInUp = () => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userId", data.result.user_id);
         localStorage.setItem("role", data.result.role)
-        navigate("/home");
+        window.location.href = "/home";
         alert(`${isLogin ? "Đăng nhập" : "Đăng ký"} thành công!`);
       }
 

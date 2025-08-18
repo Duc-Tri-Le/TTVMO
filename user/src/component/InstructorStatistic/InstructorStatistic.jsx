@@ -120,11 +120,6 @@ const InstructorStatistic = ({ userId }) => {
                     fill="#82ca9d"
                     name="Số câu đúng"
                   />
-                  <Bar
-                    dataKey="total_user_exam"
-                    fill="#ffc658"
-                    name="Số người làm"
-                  />
                   <Bar dataKey="total_exam" fill="#ff8042" name="Số bài làm" />
                 </BarChart>
               </ResponsiveContainer>
