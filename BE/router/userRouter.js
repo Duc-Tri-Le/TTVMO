@@ -7,7 +7,7 @@ import {
   lockUser,
   loginAdmin,
   loginUserController,
-  registerUSer,
+  registerUser,
   updateUser,
 } from "../controllers/userController.js";
 import { authMiddleware, authorizeRoles } from "../middleware/author.js";
@@ -17,7 +17,7 @@ import express from "express";
 const userRouter = express.Router();
 
 userRouter.post("/loginUser", loginUserController);
-userRouter.post("/registerUser", registerUSer);
+userRouter.post("/registerUser", registerUser);
 userRouter.post("/loginAdmin", loginAdmin);
 userRouter.get("/getDetailUser", getDetailUser);
 userRouter.patch("/updateUser", updateUser);

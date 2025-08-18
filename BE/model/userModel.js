@@ -16,7 +16,7 @@ const loginUserModel = async (password, email) => {
     const selectUSer = `select taiKhoan_id, matKhau, vaiTro_id, tenDangNhap from taikhoan where email = ?`;
     const [userIf] = await connection.execute(selectUSer, [email]);
     if (userIf.length === 0) {
-      return { result: { err: "sai thong tin dang nhap", success: false } };
+      return { result: { error: "sai thong tin dang nhap", success: false } };
     }
 
     const isPassword = await bcrypt.compare(password, userIf[0].matKhau);
@@ -52,7 +52,7 @@ const loginUserModel = async (password, email) => {
   }
 };
 
-const registerUSerModel = async (username, password, email, role, SDT) => {
+const registerUserModel = async (username, password, email, role, SDT) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -262,7 +262,7 @@ const lockUserModel = async (taiKhoan_id, action) => {
 
 export {
   loginUserModel,
-  registerUSerModel,
+  registerUserModel,
   loginAdminModel,
   acceptInstructorModel,
   getStudentModel,

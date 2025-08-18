@@ -174,7 +174,6 @@ const StoreContextProvider = (props) => {
 
   const ContextValues = {
     URL,
-    listCourse,
     token,
     userId,
     ifUser,

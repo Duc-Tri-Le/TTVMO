@@ -93,38 +93,18 @@ const DoExam = () => {
       },
     });
   };
-  
-  useEffect(() => {
-    // Khi reload/thoát tab
-    const handleBeforeUnload = (e) => {
-      e.preventDefault();
-      e.returnValue = "";
-      return e.returnValue;
-    };
 
-    // Khi bấm nút Back trên trình duyệt
-    const handlePopState = (e) => {
-      const confirmLeave = window.confirm(
-        "Bạn có muốn lưu đáp án trước khi thoát không?"
-      );
-      if (confirmLeave) {
-        submitExam(); // gọi API 
-      } else {
-        window.history.pushState(null, null, window.location.pathname);
-      }
-    };
+  const deleteExam = async () => {
+    fetch(`${URL}/api/exercise/delete/exam?user_exam_id=${user_exam_id}`, {
+      method: "DELETE",
+      headers: {
+        Content_Type: "application/json",
+      },
+    });
+    localStorage.removeItem("userExam");
+    localStorage.removeItem("examInfo");
+  };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("popstate", handlePopState);
-
-    // chặn user quay lại ngay lần đầu
-    window.history.pushState(null, null, window.location.pathname);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [submitExam]);
   // console.log({userAnswer, user_exam_id, BKT_id : exam.BKT_id, number_question : exam.number_question});
   return (
     <div className="exam-container">

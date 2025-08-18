@@ -16,7 +16,7 @@ const DetailCourse = () => {
   const [listExam, setListExam] = useState([]);
   const [currentVideo, setCurrentVideo] = useState(null);
 
-  console.log(listLesson);
+  // console.log(listLesson);
   if (!course) {
     return <p>Không tìm thấy thông tin khóa học.</p>;
   }
@@ -81,7 +81,7 @@ const DetailCourse = () => {
     e.preventDefault(); // chặn reload / mở tab mới
     setCurrentVideo(videoURL); // lưu video đang xem vào state
   };
-  console.log(course.gv_id === Number(user_id));
+  // console.log(course.gv_id === Number(user_id));
   return (
     <div className="detail-course-wrapper">
       <div className="detail-course-container">

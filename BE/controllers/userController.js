@@ -7,7 +7,7 @@ import {
   lockUserModel,
   loginAdminModel,
   loginUserModel,
-  registerUSerModel,
+  registerUserModel,
   updateUSerModel,
 } from "../model/userModel.js";
 
@@ -21,10 +21,10 @@ const loginUserController = async (req, res) => {
   }
 };
 
-const registerUSer = async (req, res) => {
+const registerUser = async (req, res) => {
   const { username, email, password, SDT } = req.body;
   const role = "hoc_vien";
-  const { result, token } = await registerUSerModel(
+  const { result, token } = await registerUserModel(
     username,
     password,
     email,
@@ -101,7 +101,7 @@ const lockUser = async (req, res) => {
 
 export {
   loginUserController,
-  registerUSer,
+  registerUser,
   loginAdmin,
   acceptInstructor,
   getStudent,

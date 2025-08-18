@@ -8,7 +8,7 @@ import UserCourse from "../pages/UserCourse/UserCourse.jsx";
 import OnlineCourse from "../pages/onlineCourse/onlineCourse.jsx";
 import AddExam from "../pages/AddExam/AddExam.jsx";
 import DoExam from "../pages/doExam/DoExam.jsx";
-import completeExam from "../pages/completeExam/completeExam.jsx";
+import completeExam from "../pages/completeExam/CompleteExam.jsx";
 import HistoryExam from "../pages/HistoryExam/HistoryExam.jsx";
 
 const configRoutes = {

@@ -1,26 +1,26 @@
 import React, { useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { StoreContext } from "../../../context/StoreContext";
-
+import "./AddExam.css";
 const AddExam = () => {
   const location = useLocation();
   const { khoaHoc_id, nguoiTao_id } = location.state || {};
-  const {URL} = useContext(StoreContext);
+  const { URL } = useContext(StoreContext);
   const [tenBKT, setTenBKT] = useState("");
   const [timeLimit, setTimeLimit] = useState("40");
   const [numberQuestion, setNumberQuestion] = useState(1);
   const token = localStorage.getItem("token");
   const [ifQuestions, setIfQuestions] = useState([
-    { tenCauHoi: "", ifAnswers: ["", "", "", ""], correctAnswerIndex:"" },
+    { tenCauHoi: "", ifAnswers: ["", "", "", ""], correctAnswerIndex: "" },
   ]);
 
-  console.log({ifQuestions, khoaHoc_id, nguoiTao_id});
+  console.log({ ifQuestions, khoaHoc_id, nguoiTao_id });
 
   // Thêm câu hỏi mới
   const addQuestion = () => {
     setIfQuestions([
       ...ifQuestions,
-      { tenCauHoi: "", ifAnswers: ["", "", "", ""], correctAnswerIndex:"" },
+      { tenCauHoi: "", ifAnswers: ["", "", "", ""], correctAnswerIndex: "" },
     ]);
     setNumberQuestion((prev) => prev + 1);
   };
@@ -39,13 +39,52 @@ const AddExam = () => {
     setIfQuestions(newQuestions);
   };
 
-  const handleSubmit = (e) => {
+  const checkValidation = () => {
+    if (!tenBKT.trim()) {
+      alert("Vui lòng nhập tên bài kiểm tra");
+      return false;
+    }
+
+    if (!/^\d+$/.test(timeLimit) || parseInt(timeLimit, 10) <= 0) {
+      alert("Thời gian làm bài phải là số nguyên dương");
+      return false;
+    }
+
+    if (ifQuestions.length === 0) {
+      alert("Cần có ít nhất 1 câu hỏi");
+      return false;
+    }
+
+    for (let i = 0; i < ifQuestions.length; i++) {
+      const q = ifQuestions[i];
+
+      if (!q.tenCauHoi.trim()) {
+        alert(`Câu hỏi số ${i + 1} không được để trống`);
+        return false;
+      }
+
+      for (let j = 0; j < q.ifAnswers.length; j++) {
+        if (!q.ifAnswers[j].trim()) {
+          alert(
+            `Câu trả lời ${j + 1} của câu hỏi ${i + 1} không được để trống`
+          );
+          return false;
+        }
+      }
+
+      if (q.correctAnswerIndex === "" || q.correctAnswerIndex === null) {
+        alert(`Vui lòng chọn đáp án đúng cho câu hỏi ${i + 1}`);
+        return false;
+      }
+    }
+
+    return true;
+  };
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!tenBKT) {
-      alert("Vui lòng nhập tên bài kiểm tra");
-      return;
-    }
+    if (!checkValidation()) return
 
     const ifExercise = {
       tenBKT,
@@ -54,23 +93,25 @@ const AddExam = () => {
       time_limit: timeLimit,
       number_question: numberQuestion,
     };
+    // console.log("Dữ liệu bài kiểm tra gửi lên:", { ifExercise, ifQuestions });
 
-    console.log("Dữ liệu bài kiểm tra gửi lên:", { ifExercise, ifQuestions });
-
-    const response = fetch(`${URL}/api/exercise/addExercise`,{
-      method : "POST",
-      headers : {
-        "Content-Type" : 'application/json',
-        "Authorization" : token
+    const response = await fetch(`${URL}/api/exercise/addExercise`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
       },
-      body : JSON.stringify({ifExercise,ifQuestions})
-    })
+      body: JSON.stringify({ ifExercise, ifQuestions }),
+    });
 
     // Reset form
     setTenBKT("");
     setTimeLimit("40");
     setNumberQuestion(1);
-    setIfQuestions([{ tenCauHoi: "", ifAnswers: ["", "", "", ""], correctAnswerIndex }]);
+    setIfQuestions([
+      { tenCauHoi: "", ifAnswers: ["", "", "", ""], correctAnswerIndex: "" },
+    ]);
+    alert("Tạo bài kiểm tra thành công");
   };
 
   const handleDeleteQuestion = (index) => {

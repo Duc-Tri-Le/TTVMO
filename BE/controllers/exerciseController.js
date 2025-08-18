@@ -71,7 +71,6 @@ const getListExerCise = async (req, res) => {
 
 const getDetailExercise = async (req, res) => {
   const { BKT_id } = req.query;
-  console.log(BKT_id);
   const result = await getDetailExerciseModel(BKT_id);
   return res.json(result);
 };
@@ -108,7 +107,7 @@ const submitExam = async (req, res) => {
 
 const completeExam = async (req, res) =>{ 
   const {user_exam_id, BKT_id} = req.query;
-  // console.log(user_exam_id, BKT_id);
+  console.log(user_exam_id, BKT_id);
   const {result, answer_id_correct} = await completeExamModel(user_exam_id, BKT_id);
   return res.json({result, answer_id_correct})
 }
@@ -116,12 +115,12 @@ const completeExam = async (req, res) =>{
 const historyExam = async (req, res) => {
   const {user_id} = req.query;
   const result = await historyExamModel(user_id);
-  console.log(result);
   return res.json(result)
 }
 
 const deleteExam = async (req, res) => {
   const {user_exam_id} = req.query;
+  console.log(user_exam_id);
   await deleteExamModel(user_exam_id);
 }
 export {

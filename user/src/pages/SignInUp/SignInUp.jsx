@@ -1,25 +1,73 @@
 import React, { useContext, useState } from "react";
 import { StoreContext } from "../../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
-import "./SignInUp.css"
+import "./SignInUp.css";
 
 const SignInUp = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
+  const [SDT, setSDT] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [SDT, setSDT] = useState("");
+
   const { URL } = useContext(StoreContext);
   const navigate = useNavigate();
+
+  const checkValidation = () => {
+    if (!email.trim()) {
+      setError("Email không được để trống");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Email không hợp lệ");
+      return false;
+    }
+
+    if (!password.trim()) {
+      setError("Mật khẩu không được để trống");
+      return false;
+    }
+
+    if (password.length < 5) {
+      setError("Mật khẩu phải có ít nhất 6 ký tự");
+      return false;
+    }
+
+    if (!isLogin) {
+      if (!username.trim()) {
+        setError("Tên đăng nhập không được để trống");
+        return false;
+      }
+
+      if (!SDT.trim()) {
+        setError("Số điện thoại không được để trống");
+        return false;
+      }
+
+      const phoneRegex = /^(0[0-9]{9})$/;
+      if (!phoneRegex.test(SDT)) {
+        setError(
+          "Số điện thoại không hợp lệ (phải có 10 số và bắt đầu bằng 0)"
+        );
+        return false;
+      }
+    }
+
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    const endpoint = isLogin ? "/api/user/loginUSer" : "/api/user/registerUser";
+    if (!checkValidation()) return;
+
+    setLoading(true);
+    const endpoint = isLogin ? "/api/user/loginUser" : "/api/user/registerUser";
 
     try {
       const payload = isLogin
@@ -28,28 +76,29 @@ const SignInUp = () => {
 
       const response = await fetch(`${URL}${endpoint}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       const data = await response.json();
-      console.log(data);
-      if (data?.result.success === false) {
-        alert(data?.result.err);
+
+      if (data?.result?.success === false) {
+        setError(data?.result?.err || "Có lỗi xảy ra");
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userId", data.result.user_id);
-        localStorage.setItem("role", data.result.role)
-        window.location.href = "/home";
+        localStorage.setItem("role", data.result.role);
+
         alert(`${isLogin ? "Đăng nhập" : "Đăng ký"} thành công!`);
+        navigate("/home");
+        window.location.reload();
       }
 
+      // reset form
       setUsername("");
+      setSDT("");
       setEmail("");
       setPassword("");
-      setSDT("")
     } catch (err) {
       setError(err.message);
     } finally {
@@ -71,7 +120,6 @@ const SignInUp = () => {
                 placeholder="Nhập tên đăng nhập"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                required
               />
             </div>
 
@@ -82,7 +130,6 @@ const SignInUp = () => {
                 placeholder="Nhập số điện thoại"
                 value={SDT}
                 onChange={(e) => setSDT(e.target.value)}
-                required
               />
             </div>
           </>
@@ -95,7 +142,6 @@ const SignInUp = () => {
             placeholder="Nhập email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
           />
         </div>
 
@@ -106,7 +152,6 @@ const SignInUp = () => {
             placeholder="Nhập mật khẩu"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </div>
 
@@ -120,7 +165,10 @@ const SignInUp = () => {
           {isLogin ? "Chưa có tài khoản?" : "Đã có tài khoản?"}{" "}
           <span
             style={{ color: "blue", cursor: "pointer" }}
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError("");
+            }}
           >
             {isLogin ? "Đăng ký" : "Đăng nhập"}
           </span>
