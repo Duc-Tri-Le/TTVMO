@@ -91,7 +91,6 @@ const deleteCourseModel = async (khoaHoc_id) => {
 const getCourseModel = async () => {
   const now = new Date();
   const formatted = now.toLocaleDateString("sv-SE"); // YYYY-MM-DD theo local
-  console.log(formatted);
 
   const getCourse = `select 
     any_value(lhk.tenLKH) as tenLKH, 
