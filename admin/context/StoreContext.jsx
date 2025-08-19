@@ -26,7 +26,7 @@ const StoreContextProvider = (props) => {
     const d = new Date(date);
   
     const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0'); // tháng 0-11
+    const month = String(d.getMonth() + 1).padStart(2, '0'); 
     const day = String(d.getDate()).padStart(2, '0');
   
     const hours = String(d.getHours()).padStart(2, '0');

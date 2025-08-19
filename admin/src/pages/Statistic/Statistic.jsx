@@ -10,7 +10,12 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28DFF", "#FF6666"];
 
 const Statistic = () => {
   const { statistic, getStatistic, formatDateLocal } = useContext(StoreContext);
@@ -32,21 +37,37 @@ const Statistic = () => {
     );
   };
 
-  // Xử lý dữ liệu hiển thị thời gian
+  // Format data cho LineChart
   const formattedData = Array.isArray(statistic)
     ? statistic.map((item) => {
-        let timeDisplay = item.thoi_gian;
-        if (timeDisplay.includes("W")) {
-          const [year, week] = timeDisplay.split("-W");
-          timeDisplay = `Tuần ${week} (${year})`;
+      let timeDisplay = item.thoi_gian;
+      if (timeDisplay.includes("W")) {
+        const [year, week] = timeDisplay.split("-W");
+        timeDisplay = `Tuần ${week} (${year})`;
+      }
+      return {
+        ...item,
+        thoi_gian: timeDisplay,
+        tong_doanh_thu: Number(item.tong_doanh_thu || item.doanh_thu_khoa_hoc || 0),
+        so_nguoi_dang_ky: Number(item.so_nguoi_dang_ky || 0),
+        doanh_thu_khoa_hoc: Number(item.doanh_thu_khoa_hoc || 0),
+      };
+    })
+    : [];
+
+  // Dữ liệu cho PieChart (gộp theo khóa học)
+  const pieData = Array.isArray(statistic)
+    ? Object.values(
+      statistic.reduce((acc, item) => {
+        const course = item.tenKhoaHoc || "Khóa học khác";
+        const doanhThu = Number(item.doanh_thu_khoa_hoc || item.tong_doanh_thu || 0);
+        if (!acc[course]) {
+          acc[course] = { tenKhoaHoc: course, doanh_thu_khoa_hoc: 0 };
         }
-        return {
-          ...item,
-          thoi_gian: timeDisplay,
-          tong_doanh_thu: Number(item.tong_doanh_thu),
-          so_nguoi_dang_ky: Number(item.so_nguoi_dang_ky),
-        };
-      })
+        acc[course].doanh_thu_khoa_hoc += doanhThu;
+        return acc;
+      }, {})
+    )
     : [];
 
   return (
@@ -81,29 +102,26 @@ const Statistic = () => {
       {/* Nút lấy dữ liệu */}
       <button onClick={handleGetStatistic}>Lấy thống kê</button>
 
-      {/* Danh sách */}
-      {formattedData.map((item, index) => (
+      {/* Danh sách thống kê */}
+      {/* {formattedData.map((item, index) => (
         <div className="statistic-item" key={index}>
           <p>Thời gian đăng ký: {item.thoi_gian}</p>
           <p>Số người đăng ký: {item.so_nguoi_dang_ky}</p>
           <p>Tổng doanh thu: {item.tong_doanh_thu.toLocaleString()} VNĐ</p>
+          {item.tenKhoaHoc && <p>Khoá học: {item.tenKhoaHoc}</p>}
         </div>
-      ))}
+      ))} */}
 
-      {/* Biểu đồ */}
+      {/* Biểu đồ đường */}
       {formattedData.length > 0 && (
         <div style={{ width: "90%", height: 400, marginTop: "20px" }}>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart
-              data={statistic}
+              data={formattedData}
               margin={{ top: 30, right: 50, left: 50, bottom: 30 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-
-              {/* Trục X */}
               <XAxis dataKey="thoi_gian" />
-
-              {/* Trục Y trái - Doanh thu */}
               <YAxis
                 yAxisId="left"
                 domain={[0, (dataMax) => dataMax * 1.1]}
@@ -115,8 +133,6 @@ const Statistic = () => {
                   style: { textAnchor: "middle" },
                 }}
               />
-
-              {/* Trục Y phải - Số lượng đăng ký */}
               <YAxis
                 yAxisId="right"
                 orientation="right"
@@ -128,7 +144,6 @@ const Statistic = () => {
                   style: { textAnchor: "middle" },
                 }}
               />
-
               <Tooltip
                 formatter={(value, name) => {
                   if (name === "tong_doanh_thu") {
@@ -141,29 +156,58 @@ const Statistic = () => {
                 }}
               />
               <Legend />
-
-              {/* Đường Doanh thu */}
               <Line
                 yAxisId="left"
                 type="monotone"
                 dataKey="tong_doanh_thu"
                 stroke="#8884d8"
-                name="tong_doanh_thu"
+                name="Doanh thu"
                 strokeWidth={2}
                 dot={{ r: 4 }}
               />
-
-              {/* Đường Số lượng đăng ký */}
               <Line
                 yAxisId="right"
                 type="monotone"
                 dataKey="so_nguoi_dang_ky"
                 stroke="#82ca9d"
-                name="so_nguoi_dang_ky"
+                name="Số lượng đăng ký"
                 strokeWidth={2}
                 dot={{ r: 4 }}
               />
             </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Biểu đồ tròn doanh thu theo khoá học */}
+      {pieData.length > 0 && pieData[0].tenKhoaHoc && (
+        <div style={{ width: "90%", height: 400, marginTop: "40px" }}>
+          <h3 style={{ textAlign: "center", marginBottom: "20px" }}>
+            Tỷ trọng doanh thu theo khoá học
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="doanh_thu_khoa_hoc"
+                nameKey="tenKhoaHoc"
+                cx="50%"
+                cy="50%"
+                outerRadius={130}
+                label
+              >
+                {pieData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(value) => `${Number(value).toLocaleString()} VNĐ`}
+              />
+              <Legend />
+            </PieChart>
           </ResponsiveContainer>
         </div>
       )}

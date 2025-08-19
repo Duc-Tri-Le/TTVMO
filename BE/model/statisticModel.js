@@ -152,11 +152,13 @@ const statisticAdminModel = async (start_at, end_date, group_by) => {
           WHEN ? = 'month' THEN DATE_FORMAT(register_date, '%Y-%m')
           WHEN ? = 'year' THEN DATE_FORMAT(register_date, '%Y')
       END AS thoi_gian,
-      COUNT(DISTINCT user_id) AS so_nguoi_dang_ky,
-      SUM(amount_paid) AS tong_doanh_thu
-        FROM dangkikhoahoc
+      COUNT(DISTINCT dkkh.user_id) AS so_nguoi_dang_ky,
+      SUM(dkkh.amount_paid) AS doanh_thu_khoa_hoc,
+     kh.tenKhoaHoc
+        FROM dangkikhoahoc dkkh
+       join khoahoc kh on kh.khoaHoc_id = dkkh.course_id
         WHERE register_date BETWEEN ? AND ?
-        GROUP BY thoi_gian
+        group by kh.tenKhoaHoc, thoi_gian
         ORDER BY thoi_gian;
     `;
     const [result] = await connection.execute(
