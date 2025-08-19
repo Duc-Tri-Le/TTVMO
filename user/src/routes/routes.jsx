@@ -8,8 +8,9 @@ import UserCourse from "../pages/UserCourse/UserCourse.jsx";
 import OnlineCourse from "../pages/onlineCourse/onlineCourse.jsx";
 import AddExam from "../pages/AddExam/AddExam.jsx";
 import DoExam from "../pages/doExam/DoExam.jsx";
-import completeExam from "../pages/completeExam/CompleteExam.jsx";
+import CompleteExam from "../pages/completeExam/CompleteExam.jsx";
 import HistoryExam from "../pages/HistoryExam/HistoryExam.jsx";
+import PrivateRoute from "./privateRouter.jsx";
 
 const configRoutes = {
   home: "/home",
@@ -23,11 +24,9 @@ const configRoutes = {
   AddExam: "/add/exam",
   DoExam: "/do/exam/:id",
   CompleteExam: "/complete/exam/:id",
-  StatisticsCourse : "/statistic/course",
-  HistoryExam : "history/exam"
+  HistoryExam : "/history/exam"
 };
 
-const privateRouter = [];
 
 const publicRouter = [
   {
@@ -72,7 +71,7 @@ const publicRouter = [
   },
   {
     path: configRoutes.CompleteExam,
-    element: completeExam,
+    element: CompleteExam,
   },
   {
     path : configRoutes.StatisticsCourse, element : StatisticsCourse
@@ -82,4 +81,4 @@ const publicRouter = [
   }
 ];
 
-export { configRoutes, publicRouter, privateRouter };
+export { configRoutes, publicRouter };

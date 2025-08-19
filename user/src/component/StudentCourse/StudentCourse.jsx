@@ -18,7 +18,7 @@ const StudentCourse = ({ listExam, list_student }) => {
     });
   };
   const list_students = list_student?.split(",")
-  console.log(list_students);
+
   return (
     <div className='student-course-container'>
       {listExam?.length > 0 && list_students.includes(user_id)  &&

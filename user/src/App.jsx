@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { publicRouter, privateRouter } from "./routes/routes.jsx";
-import PrivateRouteWrapper from "./config/PrivateWrapper/PrivateRouteWrapper.jsx";
+import { publicRouter } from "./routes/routes.jsx";
 import DefaultLayout from "./DefaultLayout/DefaultLayout.jsx";
 import SignInUp from "./pages/SignInUp/SignInUp.jsx";
 import React from "react";

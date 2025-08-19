@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { StoreContext } from "../../../context/StoreContext";
 import "./CompleteExam.css";
 
-const completeExam = () => {
+const CompleteExam = () => {
   const location = useLocation();
   const { is_complete, exam_id, user_exam_id } = location.state || {};
   const { URL } = useContext(StoreContext);
@@ -11,7 +11,6 @@ const completeExam = () => {
   const [isCorrect, setIsCorrect] = useState([]);
   const [ifQuestion, setIfQuestion] = useState([]);
 
-  console.log({exam_id, user_exam_id});
   useEffect(() => {
     const loadData = async () => {
       const response1 = await fetch(
@@ -68,7 +67,6 @@ const completeExam = () => {
     };
   });
 
-  console.log(mergedData);
   return (
     <div className="complete-exam-container">
       {mergedData?.map((q, index) => (
@@ -112,4 +110,4 @@ const completeExam = () => {
   );
 };
 
-export default completeExam;
+export default CompleteExam;

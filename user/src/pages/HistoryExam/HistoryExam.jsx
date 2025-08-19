@@ -5,7 +5,7 @@ import "./HistoryExam.css";
 import { useNavigate } from "react-router-dom";
 const HistoryExam = () => {
   const { listHistoryExam } = useContext(StoreContext);
-  console.log(listHistoryExam);
+
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState(""); // Khóa học được chọn để lọc
   const [sortKey, setSortKey] = useState(""); // Key để sắp xếp
@@ -19,7 +19,7 @@ const HistoryExam = () => {
   const sortedExams = [...filteredExams].sort((a, b) => {
     if (!sortKey) return 0;
     if (sortKey === "score") return b.score - a.score;
-    if (sortKey === "duration") return a.duration.localeCompare(b.duration); // theo chuỗi thời gian
+    if (sortKey === "duration") return a.duration.localeCompare(b.duration);
     if (sortKey === "tenBKT") return a.tenBKT.localeCompare(b.tenBKT);
     return 0;
   });

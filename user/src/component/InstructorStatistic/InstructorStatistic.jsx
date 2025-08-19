@@ -71,9 +71,8 @@ const InstructorStatistic = ({ userId }) => {
             <li
               key={course.khoaHoc_id}
               onClick={() => handleSelectCourse(course)}
-              className={`course-item ${
-                selectedCourse?.khoaHoc_id === course.khoaHoc_id ? "active" : ""
-              }`}
+              className={`course-item ${selectedCourse?.khoaHoc_id === course.khoaHoc_id ? "active" : ""
+                }`}
             >
               {course.tenKhoaHoc}
             </li>
@@ -113,7 +112,7 @@ const InstructorStatistic = ({ userId }) => {
                   <Bar
                     dataKey="avg_score"
                     fill="#8884d8"
-                    name="Điểm trung bình"
+                    name="Điểm"
                   />
                   <Bar
                     dataKey="total_correct_answers"
@@ -144,17 +143,12 @@ const InstructorStatistic = ({ userId }) => {
                     <Bar
                       dataKey="avg_score"
                       fill="#8884d8"
-                      name="Điểm trung bình"
+                      name="Điểm"
                     />
                     <Bar
                       dataKey="total_correct_answers"
                       fill="#82ca9d"
                       name="Số câu đúng"
-                    />
-                    <Bar
-                      dataKey="total_exam"
-                      fill="#ffc658"
-                      name="Số bài làm"
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -192,7 +186,7 @@ const InstructorStatistic = ({ userId }) => {
                         {student.tenDangNhap}
                       </div>
                       <div className="rank-student-score">
-                        {student.avg_score}
+                        {Number(student.avg_score).toFixed(2)}
                       </div>
                       <div className="rank-student-duration">
                         {student.avg_duration}

@@ -104,6 +104,19 @@ const DoExam = () => {
     localStorage.removeItem("userExam");
     localStorage.removeItem("examInfo");
   };
+  
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  },[])
 
   // console.log({userAnswer, user_exam_id, BKT_id : exam.BKT_id, number_question : exam.number_question});
   return (
