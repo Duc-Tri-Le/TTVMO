@@ -8,7 +8,7 @@ const PrivateRoute = ({ children, roles }) => {
         return <Navigate to="/sign-in-up" replace />;
     }
 
-    if (roles && !roles.includes(user.role)) {
+    if (roles && !roles.includes(role)) {
         return <Navigate to="/home" replace />;
     }
     return children;

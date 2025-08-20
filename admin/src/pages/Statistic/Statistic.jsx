@@ -55,7 +55,7 @@ const Statistic = () => {
     })
     : [];
 
-  // Dữ liệu cho PieChart (gộp theo khóa học)
+  // Dữ liệu cho PieChart 
   const pieData = Array.isArray(statistic)
     ? Object.values(
       statistic.reduce((acc, item) => {

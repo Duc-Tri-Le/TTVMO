@@ -127,6 +127,7 @@ const loginAdminModel = async (username, password, email) => {
       message: "dang nhap thanh cong",
       username,
       email,
+      role : "nguoi_quan_ly",
       user_id: taiKhoan_id,
     },
     token,
